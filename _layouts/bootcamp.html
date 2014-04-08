@@ -9,7 +9,6 @@
       <title>{{ page.venue }}</title>
     {% endif %}
     {% include header.html %}
-    <h2>A Data Carpentry Workshop</h2>
     <meta name="venue" content="{{page.venue}}" />
     <meta name="date" content="{{page.humandate}}" />
     <meta name="startdate" content="{{page.startdate}}" />
@@ -23,6 +22,7 @@
         <div class="hero-unit">
           <div class="row-fluid">
             <div class="span10">
+	      <h2>A Data Carpentry Workshop</h2>
               <h2>{{page.venue}}</h2>
               {% if page.address %}{{page.address}}<br/>{% endif %}
               {{page.humandate}}
