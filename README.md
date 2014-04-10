@@ -1,4 +1,4 @@
-2014-05-08-nescent
-==================
+2014-05-08-datacarpentry
+========================
 
-Data Carpentry bootcamp at NESCent
+Data Carpentry bootcamp at NESCent, May 8-9, 2014.
