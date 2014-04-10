@@ -23,9 +23,7 @@ eventbrite: 11257077221
 <!--
     This block includes the Eventbrite registration widget if 'eventbrite' has been set in the header.
 -->
-{% if page.eventbrite %}
-<iframe src="http://www.eventbrite.com/tickets-external?eid={{page.eventbrite}}&ref=etckt" frameborder="0" width="100%" scrolling="auto"></iframe>
-{% endif %}
+
 
 <h2>General Information</h2>
 
@@ -111,6 +109,11 @@ Data Carpentry is a partnership of the NSF-funded BIO Centers (NESCent, iPlant, 
 </p>
 
 <hr/>
+
+{% if page.eventbrite %}
+<iframe src="http://www.eventbrite.com/tickets-external?eid={{page.eventbrite}}&ref=etckt" frameborder="0" width="100%" height="500" scrolling="auto"></iframe>
+{% endif %}
+
 
 <!--
     Edit this block to show the syllabus and schedule for your bootcamp.
