@@ -416,7 +416,7 @@ You could do this one by one, but you can actually do it all at once with the ta
 
 The format is 
 
-tapply(data_you_want_to_calculate, factor_to_sort_on, function)
+aggregate(data_you_want_to_calculate, factor_to_sort_on, function)
 
 ```{r}
 tapply(dat2$wgt, dat2$species, mean)
@@ -450,6 +450,13 @@ There's lots of different ways to plot things. You can use
 help(barplot)
 ```
 or search online
+
+__EXERCISE__
+
+1. Calculate the average weight by plot
+2. Plot the average weight by plot and make the bars red
+
+
 
 
 ## FUNCTIONS - Operations Across Axes
