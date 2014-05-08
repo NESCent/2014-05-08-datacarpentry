@@ -208,6 +208,21 @@ ncol(dat)
 
 This tells us that data has 35549 rows and 8 columns. 
 
+Let's look at the structure of the data again 
+
+```{r}
+str(dat)
+```
+
+If we look at 'plot' it says it's an integer. 
+ $ plot     : int  2 3 2 7 3 1 2 1 1 6 
+and it is an integer, but in our case we want it to be a factor. Basically it's a category. We don't want to be able to do math with it. We want to be able to ask things about that category. So we're going to change it from an integer to a factor in our data frame.
+
+```{r}
+dat$plot <- as.factor(dat$plot)
+```
+
+
 ### Indexing
 
 If we want to get a single value from the data frame, 
@@ -353,14 +368,16 @@ Let's calculate their average weight
 mean(na.omit(dat$wgt))
 ```
 
-It gets a little annoying to type na.omit(dat$wgt) each time we want to do the calculation, so we could assign it to a new vector and then use that.
+It gets a little annoying to type na.omit(dat$wgt) each time we want to do the calculation, so we can actually create a new data frame with the rows that have 
+NA omitted with the complete.cases() command. Don't worry too much about this. You can google it to learn more about it if you need to use it.
 
 ```{r}
-weight <- na.omit(dat$wgt)
+dat2 <- dat[complete.cases(dat$wgt),]
 ```
 
+
 ```{r}
-mean(weight)
+mean(dat2$wgt)
 ```
 
 __EXERCISES__
@@ -374,7 +391,7 @@ When analyzing data, though, we often want to look at partial statistics, such a
 
 One way to do this is to select the data we want to create a new temporary array, using the subset() function
 
-Let's look at just the animals of species 'AB'
+Let's look at just the animals of species 'DO'
 
 ```{r}
 speciesDO <- subset(dat, species == 'DO')
@@ -392,8 +409,47 @@ Calculate the mean and standard deviation of just the DO species
 
 
 
+## Statistics for multiple samples
 
+What if you wanted to now go on and calculate the average weight of each species.
+You could do this one by one, but you can actually do it all at once with the tapply() function.
 
+The format is 
+
+tapply(data_you_want_to_calculate, factor_to_sort_on, function)
+
+```{r}
+tapply(dat2$wgt, dat2$species, mean)
+```
+
+Now we have all the means and we can even plot it. First let's put this data in a vector
+
+```{r}
+species_means <- tapply(dat2$wgt, dat2$species, mean)
+```
+
+Then we can make a barplot
+
+```{r}
+barplot(species_means)
+```
+
+The axis labels are too big though, so you can't see them all. Let's change that
+```{r}
+barplot(species_means, cex.names=0.4)
+```
+
+and change the color
+
+```{r}
+barplot(species_means, cex.names=0.4, col=c("blue"))
+```
+
+There's lots of different ways to plot things. You can use
+```{r}
+help(barplot)
+```
+or search online
 
 
 ## FUNCTIONS - Operations Across Axes
