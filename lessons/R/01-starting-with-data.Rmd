@@ -172,7 +172,7 @@ The output tells us that data currently is a data.frame in R.
 This is similar to a spreadsheet in excel, that many of us are familiar with using.
 
 ### data frames
-are the de facto data structure for most tabular data and what we use for statistics.
+are the de facto data structure for most tabular data and what we use for statistics. They can have a mix of data types, e.g.characters, integers, factors. 
 
 Data frames can have additional attributes such as `rownames()`, which can be useful for annotating data, like subject_id or sample_id. But most of the time they are not used.
 
@@ -253,100 +253,147 @@ Here we have used the built-in function seq to take regularly spaced rows and co
 For example, we have taken rows 1, 4, 7, and 10, and columns 1, 4, and 7. 
 (Again, we always include the lower bound, but stop when we reach or cross the upper bound.)
 
-If we want to know the average weight of all the animals, 
-we cannot directly take the mean of a data frame. But we can take it from a matrix.
-
-### Matrix
-
-Matrices are a special vector in R. They are not a separate type of object but simply an atomic vector with dimensions added on to it. Matrices have rows and columns.
-
-```{r}
-m <- matrix(nrow = 2, ncol = 2)
-m
-dim(m)
-```
-
-Matrices are filled column-wise.
-
-```{r}
-m <- matrix(1:6, nrow = 2, ncol = 3)
-```
-
-Other ways to construct a matrix
-
-```{r}
-m      <- 1:10
-dim(m) <- c(2, 5)
-```
-
-This takes a vector and transform into a matrix with 2 rows and 5 columns.
-
-Another way is to bind columns or rows using `cbind()` and `rbind()`.
-
-```{r}
-x <- 1:3
-y <- 10:12
-cbind(x, y)
-rbind(x, y)
-```
-
-You can also use the byrow argument to specify how the matrix is filled. From R's own documentation:
-
-```{r}
-mdat <- matrix(c(1,2,3, 11,12,13), nrow = 2, ncol = 3, byrow = TRUE,
-               dimnames = list(c("row1", "row2"),
-                               c("C.1", "C.2", "C.3")))
-mdat
-```
-
-Lets convert our data frame to a matrix, but give it a new name:
-
-```{r}
-datamatrix <- as.matrix(dat)
-```
-
-And then take we can take the mean of the 'wgt' column (column 8) to get mean weight
-
-First let's look at that column
-```{r}
-datamatrix[,8]
-```
-
-We see it's what we want so we can calculate the mean
-
-```{r}
-mean(datamatrix[,2])
-```
-
-Oops, we get an error. That's because in that column 
-
-There are lots of useful built-in commands that we can use in R:
-
-```{r}
-paste('maximum inflammation:', max(datamatrix))
-paste('minimum inflammation:', min(datamatrix))
-paste('standard deviation:', sd(datamatrix))
-```
-
-When analyzing data, though, we often want to look at partial statistics, such as the maximum value per species or the average value per plot. 
-One way to do this is to select the data we want to create a new temporary array, then ask it to do the calculation:
-
-```{r}
-animal_1 <- dat[1, ] # first row, all of the columns
-paste('wgt for animal 1:', max(patient_1))
-```
-
-We don't actually need to store the row in a variable of its own. 
-Instead, we can combine the selection and the method call:
-
-```{r}
-paste('maximum inflammation for patient 2:', max(dat[2,]))
-```
-
 __EXERCISES__
 
 1. If data holds our array of survey data, what does `data[3:3, 4:4]` produce? 
 What about `data[3:3, 4:1]`? Explain the results to the person sitting next to you
+
+
+## Calculating statistics
+
+We've gotten our data in to R, so that we can do some analysis with it.
+First, let's get a sense of our data
+We might for instance want to know how many animals we trapped in each plot, or
+how many of each species were caught.
+
+We can look at just one column at a time in different ways. We can reference that 
+column by it's number
+
+```{r}
+# Look at the weight column, the 8th one
+dat[,8]
+```
+
+or by its name
+```{r}
+# Look at the weight column, by its name wgt
+dat$wgt
+```
+
+If you forget the column names, you can type
+
+```{r}
+colnames(dat)
+```
+
+or 
+
+```{r}
+str(dat)
+```
+
+will show you the column names and the type of data in them
+
+If we do this, we can see for instance that there are 48 species
+Factor w/ 48 levels means there are 48 different versions of that factor
+
+So, let's see how many of each species we have
+
+```{r}
+table(dat$species)
+```
+
+We could even assign it to a variable and make it a data frame to make it easier to look at
+
+```{r}
+species_table <- as.data.frame(table(dat$species))
+```
+
+Maybe we also want to see how many animals were captured in each plot
+
+```{r}
+table(dat$plot)
+```
+
+Now we want to do some actual calculations with the data though. Let's calculate the average weight of all the animals. R has a lot of built in statistical functions, like mean, median, max, min
+
+
+```{r}
+mean(dat$wgt)
+```
+
+Hmm, we just get NA. That's because we don't have the weight for every animal
+and it's recorded as NA when we don't. We can't do math on NA. Conveniently R 
+provides a function na.omit() that will omit NAs from your data.
+
+How many animals would we omit. We can look at how many animals we have overall and subtract how many we have after the NAs are omitted.
+
+Because data is in a vector, when we want to know how much of something we have
+we ask how long it is with the length() function
+
+```{r}
+length(dat$wgt)
+```
+
+```{r}
+length(na.omit(dat$wgt))
+```
+
+We can then subtract those numbers
+
+```{r}
+length(dat$wgt) - length(na.omit(dat$wgt))
+```
+
+We can see we'll be omitting 3266 animals. Bummer, but not terrible when we've sampled over 35,000 animals.
+
+Let's calculate their average weight
+
+```{r}
+mean(na.omit(dat$wgt))
+```
+
+It gets a little annoying to type na.omit(dat$wgt) each time we want to do the calculation, so we could assign it to a new vector and then use that.
+
+```{r}
+weight <- na.omit(dat$wgt)
+```
+
+```{r}
+mean(weight)
+```
+
+__EXERCISES__
+
+R has a bunch of handy statistical functions built in. Calculate the median, standard deviation, minimum and maximum weight. For bonus points calculate the standard error.
+
+
+## Statistics on subsets of data
+
+When analyzing data, though, we often want to look at partial statistics, such as the maximum value per species or the average value per plot. 
+
+One way to do this is to select the data we want to create a new temporary array, using the subset() function
+
+Let's look at just the animals of species 'AB'
+
+```{r}
+speciesDO <- subset(dat, species == 'DO')
+```
+
+We could see in our table from before that 'DO' had 3027 species. Let's check to see if that's what we have by checking the number of rows
+
+```{r}
+nrow(speciesDO)
+```
+
+__EXERCISE__
+
+Calculate the mean and standard deviation of just the DO species
+
+
+
+
+
 
 
 ## FUNCTIONS - Operations Across Axes
