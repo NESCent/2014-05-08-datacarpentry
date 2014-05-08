@@ -409,26 +409,57 @@ Calculate the mean and standard deviation of just the DO species
 
 
 
-## Statistics for multiple samples
+## FUNCTIONS - Operations Across Axes
+
+What if we need the maximum weight for all animals, or the average for each plot? 
+As the diagram below shows, we want to perform the operation across an axis:
+
+To support this, in R we can use the `apply` or 'tapply' function:
+
+```{r}
+help(apply) #or ?apply
+```
+
+Apply allows us to repeat a function on all of the rows (1), columns (2), or both(1:2) of an array or matrix.
 
 What if you wanted to now go on and calculate the average weight of each species.
 You could do this one by one, but you can actually do it all at once with the tapply() function.
 
 The format is 
 
-aggregate(data_you_want_to_calculate, factor_to_sort_on, function)
+tapply(data_you_want_to_calculate, factor_to_sort_on, function)
 
 ```{r}
 tapply(dat2$wgt, dat2$species, mean)
 ```
 
-Now we have all the means and we can even plot it. First let's put this data in a vector
+Now we can put all the means into a variable
 
 ```{r}
 species_means <- tapply(dat2$wgt, dat2$species, mean)
 ```
 
-Then we can make a barplot
+### Challenge  
+1. Find the maximum and minimum values for weight for each species
+2. Save these values to a varible.
+3. What is the length of your new variable?
+
+```{r}
+species_max <- tapply(dat2$wgt, dat2$species, max)
+species_min <- tapply(dat2$wgt, dat2$species, min)
+```
+
+Now that we have all this summary information, we can put it back together into a data frame that we can use for further analysis and plotting, provided they are the same length.
+
+
+```{r}
+d.summary = data.frame(species_means, species_min, species_max)
+```
+
+## Plotting  
+The mathematician Richard Hamming once said, "The purpose of computing is insight, not numbers," and the best way to develop insight is often to visualize data. Visualization deserves an entire lecture (or course) of its own, but we can explore a few features of R's base plotting package and ggplot2 here. 
+
+Lets use the average species data that we saved and plot it. 
 
 ```{r}
 barplot(species_means)
@@ -445,95 +476,31 @@ and change the color
 barplot(species_means, cex.names=0.4, col=c("blue"))
 ```
 
+
+
+__EXERCISES__
+
+1. Create a plot showing the standard deviation of the species data 
+2. Calculate the average weight by plot id
+3. Plot the average weight by plot and make the bars red
+
+
+
+
+
 There's lots of different ways to plot things. You can use
 ```{r}
 help(barplot)
 ```
 or search online
 
-__EXERCISE__
-
-1. Calculate the average weight by plot
-2. Plot the average weight by plot and make the bars red
 
 
 
 
-## FUNCTIONS - Operations Across Axes
-
-What if we need the maximum weight for all animals, or the average for each plot? 
-As the diagram below shows, we want to perform the operation across an axis:
-
-To support this, in R we can use the `apply` function:
-
-```{r}
-help(apply) #or ?apply
-```
-
-Apply allows us to repeat a function on all of the rows (1), columns (2), or both(1:2) of an array or matrix.
-
-If each row is a patient, and we want to know each patient's average inflammation, we will need to iterate our method across all of the rows. 
-	
-```{r}
-avg_inflammation = apply(dat, 2, mean)
-```
-
-### Challenge  
-1. Find the maximum and minimum values for inflammation at each day (rows are patients, and columns are days).
-2. Save these values to a varible.
-3. What is the length of your new variable?
-
-```{r, echo=FALSE}
-min_inflammation = apply(dat, 2, min)
-max_inflammation = apply(dat, 2, max)
-```
-
-We can also create a vector of our study days (the number of columns in data)
-
-```{r}
-tempo = c(1:40)
-#or
-tempo = c(1:ncol(dat))
-```
-
-Notice that the object was named `tempo` instead of `time`. `time` is a R built-in function, and as good practice avoid giving existing function names to your objects. 
-
-Now that we have all this summary information, we can put it back together into a data frame that we can use for further analysis and plotting, provided they are the same length.
 
 
-```{r}
-d.summary = data.frame(tempo, avg_inflammation, min_inflammation, max_inflammation)
-```
 
-## Plotting  
-The mathematician Richard Hamming once said, "The purpose of computing is insight, not numbers," and the best way to develop insight is often to visualize data. Visualization deserves an entire lecture (or course) of its own, but we can explore a few features of R's base plotting package and ggplot2 here. 
-
-Lets use the average inflammation data that we saved and plot it over the study time. 
-
-```{r}
-plot(tempo, avg_inflammation)
-```
-
-The result is roughly a linear rise and fall, which is suspicious: based on other studies, we expect a sharper rise and slower fall. Let's have a look at two other statistics:
-
-```{r}
-plot(tempo, max_inflammation)
-plot(tempo, min_inflammation)
-```
-
-The maximum value rises and falls perfectly smoothly, while the minimum seems to be a step function. Neither result seems particularly likely, so either there's a mistake in our calculations or something is wrong with our data.
-
-```{r}
-library(ggplot2)
-ggplot(d.summary, aes(tempo, avg_inflammation)) + geom_point()
-```
-
-__EXERCISES__
-
-1. Create a plot showing the standard deviation of the inflammation data 
-for each day across all patients.
-
-2. Create a ggplot that shows the data as a line. As a histogram. etc.
 
 ## Key Points
 
@@ -552,6 +519,4 @@ for each day across all patients.
 * Write a simple for loop 
 * Use base R and the `ggplot2` library for creating simple visualizations.
 
-## Next Steps
 
-Our work so far has convinced us that something's wrong with our first data file. We would like to check the other 11 the same way, but typing in the same commands repeatedly is tedious and error-prone. Since computers don't get bored (that we know of), we should create a way to do a complete analysis with a single command, and then figure out how to repeat that step once for each file. These operations are the subjects of the next two lessons.
