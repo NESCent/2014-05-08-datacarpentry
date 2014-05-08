@@ -307,6 +307,13 @@ That seems almost right: the original mean was about 6.1, so the lower bound fro
 paste("std dev before and after:", sd(datamatrix), sd(centered))
 ```
 
+```
+## Warning: sd(<matrix>) is deprecated.
+##  Use apply(*, 2, sd) instead.
+## Warning: sd(<matrix>) is deprecated.
+##  Use apply(*, 2, sd) instead.
+```
+
 
 Those values look the same, but we probably wouldn't notice if they were different in the sixth decimal place. Let's do this instead:
 
@@ -314,6 +321,13 @@ Those values look the same, but we probably wouldn't notice if they were differe
 ```r
 paste("difference in standard deviations before and after:", sd(datamatrix) - 
     sd(centered))
+```
+
+```
+## Warning: sd(<matrix>) is deprecated.
+##  Use apply(*, 2, sd) instead.
+## Warning: sd(<matrix>) is deprecated.
+##  Use apply(*, 2, sd) instead.
 ```
 
 
@@ -438,8 +452,8 @@ There's a lot of information here, but the most important part is the first coup
 
 
 ```r
-read.csv(file, header = TRUE, sep = ",", quote = "\"", dec = ".", fill = TRUE, 
-    comment.char = "", ...)
+read.csv(file, header = TRUE, sep = ",", quote = "\"",
+         dec = ".", fill = TRUE, comment.char = "", ...)
 ```
 
 
@@ -451,7 +465,12 @@ read.csv("data/inflammation-01.csv", ",")
 ```
 
 ```
-## Error: invalid argument type
+## Warning: cannot open file 'data/inflammation-01.csv': No such file or
+## directory
+```
+
+```
+## Error: cannot open the connection
 ```
 
 
