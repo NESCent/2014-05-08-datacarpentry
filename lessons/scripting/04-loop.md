@@ -3,9 +3,9 @@ layout: lesson
 root: ../..
 title: Loops
 ---
-<div class="objectives" markdown="1">
 
 #### Objectives
+
 *   Write a loop that applies one or more commands separately to each file in a set of files.
 *   Trace the values taken on by a loop variable during execution of the loop.
 *   Explain the difference between a variable's name and its value.
@@ -13,11 +13,74 @@ title: Loops
 *   Demonstrate how to see what commands have recently been executed.
 *   Re-run recently executed commands without retyping them.
 
-</div>
+As we've seen, wildcards and tab completion are two ways to reduce
+typing (and mistakes from mistyping).  Shell history is a way to
+re-execute commands executed previously, verbatim or in slight
+variations. 
 
-Wildcards and tab completion are two ways to reduce typing (and typing mistakes).
-Another is to tell the shell to do something over and over again.
-Suppose we have several hundred genome data files named `basilisk.dat`, `unicorn.dat`, and so on.
+Another is to tell the shell to do something over and over again, such
+as applying the same basic command to different files, or with
+different parameters. This will involve loops, variables, and variable
+substitution.
+
+Suppose our collaborators have shared with us the latest trap survey
+data with extension .xls and timestamp encoded in the filename. We
+want to have file extensions actually mirror the filetype.
+
+The key to building loops (and scripts) is to do it incrementally. The
+first step is to contruct the inner block of the loop for one file (or
+parameter, such that the file (or parameter) can change from one
+execution of the loop to the next, without requiring hand-editing the
+command.
+
+Let's start. This is what we learned already:
+
+~~~
+$ mv plots.201405.xls plots.201405.csv
+~~~
+
+In this form, the filenames can't change without manual
+intervention. Let's find a command that creates the target filename
+from the source filename; once we have that, we don't have to manually
+specify the target anymore.  Here, the target extension part is constant
+(.csv), and the source name without extension doesn't change. Let's
+extract the part without extension:
+
+~~~
+$ echo plots.201405.xls | cut -d . -f 1,2
+~~~
+
+We can use backquotes to capture the output from a command, and
+exploit the shell's feature of stringing unseparated strings together:
+
+~~~
+$ echo `echo plots.201405.xls | cut -d . -f 1,2`".csv"
+~~~
+
+Now if we can make the name of the source file a variable that can
+take on different values, we have the inner block of the
+loop. Variables in bash are assigned values with the `=` symbol:
+
+~~~
+$ f=plots.201405.xls
+~~~
+
+The shell substitutes the value of a variable if the variable is
+prefixed with `$`:
+
+~~~
+$ echo $f
+$ echo `basename -s .xls $f`".csv"
+~~~
+
+One of the most frequently used loops in bash is `for`. It loops over
+a specified list of values:
+
+~~~
+$ for f in plots.xls 
+~~~
+
+we have several hundred genome data files named `basilisk.dat`, `unicorn.dat`, and so on.
 When new files arrive,
 we'd like to rename the existing ones to `original-basilisk.dat` and `original-unicorn.dat`.
 We can't use:
