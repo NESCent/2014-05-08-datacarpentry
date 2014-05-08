@@ -13,12 +13,8 @@ so that they don't have to type the same things over and over again.
 
 <div class="toc" markdown="1">
 
-1.  [Introducing the Shell](00-intro.html)
-2.  [Files and Directories](01-filedir.html)
-3.  [Creating Things](02-create.html)
-4.  [Pipes and Filters](03-pipefilter.html)
-5.  [Loops](04-loop.html)
-6.  [Shell Scripts](05-script.html)
-7.  [Finding Things](06-find.html)
+1.  [Loops](04-loop.html)
+2.  [Shell Scripts](05-script.html)
+3.  [Finding Things](06-find.html)
 
 </div>
