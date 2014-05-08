@@ -440,6 +440,7 @@ Now we can put all the means into a variable
 species_means <- tapply(dat2$wgt, dat2$species, mean)
 ```
 
+
 ### Challenge  
 1. Find the maximum and minimum values for weight for each species
 2. Save these values to a varible.
@@ -457,24 +458,53 @@ Now that we have all this summary information, we can put it back together into 
 d.summary = data.frame(species_means, species_min, species_max)
 ```
 
+We can also do this with the aggregate function, which deals with the NA rows that we eliminated more nicely. This is a very useful function, and it puts the output in to a data frame rather than a list. 
+If you look at documentation for aggregate() there's a few different ways to write the function. This is one way.
+
+The format is 
+aggregate(what-to-plot~what-you-want-it-sorted-by, data=the-dataset, function)
+
+```{r}
+mean_species <- aggregate(wgt~species, data=dat, mean)
+```
+
+Maybe we want to look at the data average per species per plot
+
+```{r}
+aggregate(wgt~species+plot, data=dat, mean)
+```
+
+Or we just want to look at the average of particular species in each plot. Then we can subset the data within the function
+
+```{r}
+aggregate(wgt~species+plot, data=subset(dat, species == "DO"), mean)
+```
+
+__EXERCISES__
+
+1. Create a data frame with the standard deviation of weight for each species
+
 ## Plotting  
 The mathematician Richard Hamming once said, "The purpose of computing is insight, not numbers," and the best way to develop insight is often to visualize data. Visualization deserves an entire lecture (or course) of its own, but we can explore a few features of R's base plotting package and ggplot2 here. 
 
 Lets use the average species data that we saved and plot it. 
 
+R has built in plotting functions
+
 ```{r}
-barplot(species_means)
+barplot(mean_species$wgt, names.arg=mean_species$species)
 ```
+
 
 The axis labels are too big though, so you can't see them all. Let's change that
 ```{r}
-barplot(species_means, cex.names=0.4)
+barplot(mean_species$wgt, names.arg=mean_species$species, cex.names=0.4)
 ```
 
 and change the color
 
 ```{r}
-barplot(species_means, cex.names=0.4, col=c("blue"))
+barplot(mean_species$wgt, names.arg=mean_species$species, cex.names=0.4, col=c("blue"))
 ```
 
 
