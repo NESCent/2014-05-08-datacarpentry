@@ -524,9 +524,9 @@ help(barplot)
 ```
 or search online
 
+There's also a plotting package called ggplot that adds a lot of functionality. I'm not going to go through it, but you can see a gallery of what's possible for plotting with ggplot.
 
-
-
+Basically, you can do almost anything, and you can spend infinite time refining it.
 
 
 
