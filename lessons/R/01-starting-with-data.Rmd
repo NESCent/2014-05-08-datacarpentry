@@ -415,9 +415,10 @@ What if we need the maximum weight for all animals, or the average for each plot
 As the diagram below shows, we want to perform the operation across an axis:
 
 To support this, in R we can use the `apply` or 'tapply' function:
+tapply() takes a vector, so we'll use that
 
 ```{r}
-help(apply) #or ?apply
+help(tapply) #or ?apply
 ```
 
 Apply allows us to repeat a function on all of the rows (1), columns (2), or both(1:2) of an array or matrix.
