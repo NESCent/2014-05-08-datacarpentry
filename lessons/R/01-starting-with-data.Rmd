@@ -132,7 +132,7 @@ age  <- age - 20
 ```
 
 We can also add to variable that are vectors, and update them by making them longer. 
-For example, if we are creating a vector of patient weights, we could update that vector using `append`. `append` takes two arguments, and adds the second item to the end of the first one.
+For example, if we are creating a vector of species weights, we could update that vector using `append`. `append` takes two arguments, and adds the second item to the end of the first one.
 
 ```{r}
 weights <- c(100)
@@ -216,13 +216,13 @@ we must provide an index in square brackets, just as we do in math:
 
 ```{r}
 paste('first value in data:', dat[1,1])
-paste('middle value in data:', dat[30,20])
+paste('middle value in data:', dat[3,2])
 ```
 
 R indexes starting at 1. Programming languages like Fortran, MATLAB, and R start counting at 1, because that's what human beings have done for thousands of years. 
 Languages in the C family (including C++, Java, Perl, and Python) count from 0 because that's simpler for computers to do. 
 
-An index like [30, 20] selects a single element of an array, 
+An index like [3, 2] selects a single element of an array, 
 but we can select whole sections as well. 
 For example, we can select the first ten days (columns) of values 
 for the first four (rows) patients like this:
