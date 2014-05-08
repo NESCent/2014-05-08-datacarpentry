@@ -508,7 +508,6 @@ barplot(mean_species$wgt, names.arg=mean_species$species, cex.names=0.4, col=c("
 ```
 
 
-
 __EXERCISES__
 
 1. Create a plot showing the standard deviation of the species data 
