@@ -157,10 +157,12 @@ which have species codes DM, DO, and DS we could combine the tests using OR:
    The day, month, year, species ID, and weight (in kg) for
    individuals caught on Plot 1 that weigh more than 75 g***
 
+
 Exporting results of queries
 ----------------------------
 Getting the result of your query out to work with elsewhere is as easy
 as clicking the **Actions** button and choosing **Save Result to File**.
+
 
 Building more complex queries
 -----------------------------
@@ -182,18 +184,19 @@ to make sure you are getting what you want.  Sometimes it might help to take a
 subset of the data that you can easily see in a temporary database to practice
 your queries on before working on a larger or more complicated database.
 
+
 Sorting
 -------
 
 We can also sort the results of our queries by using ORDER BY.
-For simplicity, let’s go back to the species table and alphabetize it by Genus.
+For simplicity, let’s go back to the species table and alphabetize it by taxa.
 
-    SELECT * FROM species ORDER BY species ASC;
+    SELECT * FROM species ORDER BY taxa ASC;
 
 The keyword ASC tells us to order it in Ascending order.
 We could alternately use DESC to get descending order.
 
-    SELECT * FROM species ORDER BY species DESC;
+    SELECT * FROM species ORDER BY taxa DESC;
 
 ASC is the default.
 
@@ -203,7 +206,9 @@ To truly be alphabetical, we might want to order by genus then species.
     SELECT * FROM species ORDER BY genus ASC, species ASC;
 
 ***Exercise: Write a query that returns
-             The genus, species, and taxon, sorted alphabetically by taxon.***
+             year, species, and weight in kg from the surveys table, sorted with
+             the largest weights at the top***
+
 
 Order of execution
 ------------------
