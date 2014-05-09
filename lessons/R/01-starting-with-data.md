@@ -1,23 +1,22 @@
 
 
-# Analyzing Patient Data
+# Analyzing Survey Data
 
-We are studying inflammation in patients who have been given a new treatment for arthritis,
-and need to analyze the first dozen data sets. 
-The data sets are stored in .csv each row holds information for a single patient, 
-and the columns represent successive days. 
+We are studying the species and weight of animals caught in plots in our study area.
+The data sets are stored in .csv each row holds information for a single animal, 
+and the columns represent record_id,month,day,year,plot,species,sex,wgt 
 The first few rows of our first file look like this:
 
-	0,0,1,3,1,2,4,7,8,3,3,3,10,5,7,4,7,7,12,18,6,13,11,11,7,7,4,6,8,8,4,4,5,7,3,4,2,3,0,0
-	0,1,2,1,2,1,3,2,2,6,10,11,5,9,4,4,7,16,8,6,18,4,12,5,12,7,11,5,11,3,3,5,4,4,5,5,1,1,0,1
-	0,1,1,3,3,2,6,2,5,9,5,7,4,5,4,15,5,11,9,10,19,14,12,17,7,12,11,7,4,2,10,5,4,2,2,3,2,2,1,1
-	0,0,2,0,4,2,2,1,6,7,10,7,9,13,8,8,15,10,10,7,17,4,4,7,6,15,6,4,9,11,3,5,6,3,3,4,2,3,2,1
-	0,1,1,3,3,1,3,5,2,4,4,7,6,5,3,10,8,10,6,17,9,14,9,7,13,9,12,6,7,7,9,6,3,2,2,4,2,0,1,1`
+"63","8","19","1977","3","DM","M","40"
+"64","8","19","1977","7","DM","M","48"
+"65","8","19","1977","4","DM","F","29"
+"66","8","19","1977","4","DM","F","46"
+"67","8","19","1977","7","DM","M","36"
 
 ### We want to:
 
 * load that data into memory,
-* calculate the average inflammation per day across all patients, and
+* calculate the average weight of the animals across all animals, and
 * plot the result.
 To do all that, we'll have to learn a little bit about programming.
 
@@ -50,7 +49,7 @@ We will use `setwd()` and `read.csv()`. These are built-in functions in R. Let's
 
 ```r
 setwd("pathname")
-read.csv("data/inflammation-01.csv")
+read.csv("data/surveys.csv", header = TRUE)
 ```
 
 
@@ -112,7 +111,7 @@ If we imagine the variable as a sticky note with a name written on it,
 assignment is like putting the sticky note on a particular value:
 
 This means that assigning a value to one variable does not change the values of other variables. 
-For example, let's store the subject's weight in pounds in a variable:
+For example, let's store the animal's weight in pounds in a variable:
 
 
 ```r
@@ -150,7 +149,7 @@ age <- age - 20
 
 
 We can also add to variable that are vectors, and update them by making them longer. 
-For example, if we are creating a vector of patient weights, we could update that vector using `append`. `append` takes two arguments, and adds the second item to the end of the first one.
+For example, if we are creating a vector of animal weights, we could update that vector using `append`. `append` takes two arguments, and adds the second item to the end of the first one.
 
 
 ```r
@@ -165,7 +164,7 @@ Now that we know how to assign things to variables, let's re-run `read.csv` and 
 
 
 ```r
-dat <- read.csv("data/inflammation-01.csv", header = FALSE)
+dat <- read.csv("data/surveys.csv", header = TRUE)
 ```
 
 
@@ -199,7 +198,7 @@ The output tells us that data currently is a data.frame in R.
 This is similar to a spreadsheet in excel, that many of us are familiar with using.
 
 ### data frames
-are the de facto data structure for most tabular data and what we use for statistics.
+are the de facto data structure for most tabular data and what we use for statistics. They can have a mix of data types, e.g.characters, integers, factors. 
 
 Data frames can have additional attributes such as `rownames()`, which can be useful for annotating data, like subject_id or sample_id. But most of the time they are not used.
 
@@ -235,7 +234,26 @@ ncol(dat)
 ```
 
 
-This tells us that data has 60 rows and 40 columns. 
+This tells us that data has 35549 rows and 8 columns. 
+
+Let's look at the structure of the data again 
+
+
+```r
+str(dat)
+```
+
+
+If we look at 'plot' it says it's an integer. 
+ $ plot     : int  2 3 2 7 3 1 2 1 1 6 
+and it is an integer, but in our case we want it to be a factor. Basically it's a category. We don't want to be able to do math with it. We want to be able to ask things about that category. So we're going to change it from an integer to a factor in our data frame.
+
+
+```r
+dat$plot <- as.factor(dat$plot)
+```
+
+
 
 ### Indexing
 
@@ -245,21 +263,21 @@ we must provide an index in square brackets, just as we do in math:
 
 ```r
 paste("first value in data:", dat[1, 1])
-paste("middle value in data:", dat[30, 20])
+paste("middle value in data:", dat[3, 2])
 ```
 
 
 R indexes starting at 1. Programming languages like Fortran, MATLAB, and R start counting at 1, because that's what human beings have done for thousands of years. 
 Languages in the C family (including C++, Java, Perl, and Python) count from 0 because that's simpler for computers to do. 
 
-An index like [30, 20] selects a single element of an array, 
+An index like [3, 2] selects a single element of an array, 
 but we can select whole sections as well. 
-For example, we can select the first ten days (columns) of values 
-for the first four (rows) patients like this:
+For example, we can select the month, day and year (columns) of values 
+for the first four (rows) animals like this:
 
 
 ```r
-dat[1:4, 1:10]
+dat[1:4, 1:3]
 ```
 
 
@@ -268,7 +286,7 @@ We don't have to start slices at 0:
 
 
 ```r
-dat[5:10, 0:10]
+dat[5:10, 0:3]
 ```
 
 
@@ -276,226 +294,348 @@ and we don't have to take all the values in the slice, we can use `c()` to selec
 
 
 ```r
-dat[c(1:10, 20:30), c(1:10, 20:30)]
+dat[c(1:10, 20:30), c(1:3, 7:8)]
 ```
 
 
-Here we have taken rows and columns 1 through10 and 20 through 30.
+Here we have taken rows 1 through 10 and 20 through 30 and columns 1 through 3 and 7 through 8.
 
 
 ```r
-dat[seq(1, 12, 3), seq(1, 20, 3)]
+dat[seq(1, 12, 3), seq(1, 8, 3)]
 ```
 
 
 Here we have used the built-in function seq to take regularly spaced rows and columns.
-For example, we have taken rows 1, 4, 7, and 10, and columns 1, 4, 7, 10, 13, 16, and 19. 
+For example, we have taken rows 1, 4, 7, and 10, and columns 1, 4, and 7. 
 (Again, we always include the lower bound, but stop when we reach or cross the upper bound.)
 
-If we want to know the average inflammation of all patients on all days, 
-we cannot directly take the mean of a data frame. But we can take it from a matrix.
+__EXERCISES__
 
-### Matrix
+1. If data holds our array of survey data, what does `data[3:3, 4:4]` produce? 
+What about `data[3:3, 4:1]`? Explain the results to the person sitting next to you
 
-Matrices are a special vector in R. They are not a separate type of object but simply an atomic vector with dimensions added on to it. Matrices have rows and columns.
+
+## Calculating statistics
+
+We've gotten our data in to R, so that we can do some analysis with it.
+First, let's get a sense of our data
+We might for instance want to know how many animals we trapped in each plot, or
+how many of each species were caught.
+
+We can look at just one column at a time in different ways. We can reference that 
+column by it's number
 
 
 ```r
-m <- matrix(nrow = 2, ncol = 2)
-m
-dim(m)
+# Look at the weight column, the 8th one
+dat[, 8]
 ```
 
 
-Matrices are filled column-wise.
-
+or by its name
 
 ```r
-m <- matrix(1:6, nrow = 2, ncol = 3)
+# Look at the weight column, by its name wgt
+dat$wgt
 ```
 
 
-Other ways to construct a matrix
+If you forget the column names, you can type
 
 
 ```r
-m <- 1:10
-dim(m) <- c(2, 5)
+colnames(dat)
 ```
 
 
-This takes a vector and transform into a matrix with 2 rows and 5 columns.
-
-Another way is to bind columns or rows using `cbind()` and `rbind()`.
+or 
 
 
 ```r
-x <- 1:3
-y <- 10:12
-cbind(x, y)
-rbind(x, y)
+str(dat)
 ```
 
 
-You can also use the byrow argument to specify how the matrix is filled. From R's own documentation:
+will show you the column names and the type of data in them
+
+If we do this, we can see for instance that there are 48 species
+Factor w/ 48 levels means there are 48 different versions of that factor
+
+So, let's see how many of each species we have
 
 
 ```r
-mdat <- matrix(c(1, 2, 3, 11, 12, 13), nrow = 2, ncol = 3, byrow = TRUE, dimnames = list(c("row1", 
-    "row2"), c("C.1", "C.2", "C.3")))
-mdat
+table(dat$species)
 ```
 
 
-Lets convert our data frame to a matrix, but give it a new name:
+We could even assign it to a variable and make it a data frame to make it easier to look at
 
 
 ```r
-datamatrix <- as.matrix(dat)
+species_table <- as.data.frame(table(dat$species))
 ```
 
 
-And then take the mean of all the values:
+Maybe we also want to see how many animals were captured in each plot
 
 
 ```r
-mean(datamatrix)
+table(dat$plot)
 ```
 
 
-There are lots of useful built-in commands that we can use in R:
+Now we want to do some actual calculations with the data though. Let's calculate the average weight of all the animals. R has a lot of built in statistical functions, like mean, median, max, min
+
 
 
 ```r
-paste("maximum inflammation:", max(datamatrix))
-paste("minimum inflammation:", min(datamatrix))
-paste("standard deviation:", sd(datamatrix))
+mean(dat$wgt)
 ```
 
 
-When analyzing data, though, we often want to look at partial statistics, such as the maximum value per patient or the average value per day. 
-One way to do this is to select the data we want to create a new temporary array, then ask it to do the calculation:
+Hmm, we just get NA. That's because we don't have the weight for every animal
+and it's recorded as NA when we don't. We can't do math on NA. Conveniently R 
+provides a function na.omit() that will omit NAs from your data.
+
+How many animals would we omit. We can look at how many animals we have overall and subtract how many we have after the NAs are omitted.
+
+Because data is in a vector, when we want to know how much of something we have
+we ask how long it is with the length() function
 
 
 ```r
-patient_1 <- dat[1, ]  # first row, all of the columns
-paste("maximum inflammation for patient 1:", max(patient_1))
+length(dat$wgt)
 ```
 
 
-We don't actually need to store the row in a variable of its own. 
-Instead, we can combine the selection and the method call:
+
+```r
+length(na.omit(dat$wgt))
+```
+
+
+We can then subtract those numbers
 
 
 ```r
-paste("maximum inflammation for patient 2:", max(dat[2, ]))
+length(dat$wgt) - length(na.omit(dat$wgt))
+```
+
+
+We can see we'll be omitting 3266 animals. Bummer, but not terrible when we've sampled over 35,000 animals.
+
+Let's calculate their average weight
+
+
+```r
+mean(na.omit(dat$wgt))
+```
+
+
+It gets a little annoying to type na.omit(dat$wgt) each time we want to do the calculation, so we can actually create a new data frame with the rows that have 
+NA omitted with the complete.cases() command. Don't worry too much about this. You can google it to learn more about it if you need to use it.
+
+
+```r
+dat2 <- dat[complete.cases(dat$wgt), ]
+```
+
+
+
+
+```r
+mean(dat2$wgt)
 ```
 
 
 __EXERCISES__
 
-1. If data holds our array of patient data, what does `data[3:3, 4:4]` produce? 
-What about `data[3:3, 4:1]`? Explain the results to the person sitting next to you
+R has a bunch of handy statistical functions built in. Calculate the median, standard deviation, minimum and maximum weight. For bonus points calculate the standard error.
+
+
+## Statistics on subsets of data
+
+When analyzing data, though, we often want to look at partial statistics, such as the maximum value per species or the average value per plot. 
+
+One way to do this is to select the data we want to create a new temporary array, using the subset() function
+
+Let's look at just the animals of species 'DO'
+
+
+```r
+speciesDO <- subset(dat, species == "DO")
+```
+
+
+We could see in our table from before that 'DO' had 3027 species. Let's check to see if that's what we have by checking the number of rows
+
+
+```r
+nrow(speciesDO)
+```
+
+
+__EXERCISE__
+
+Calculate the mean and standard deviation of just the DO species
+
 
 
 ## FUNCTIONS - Operations Across Axes
 
-What if we need the maximum inflammation for all patients, or the average for each day? 
+What if we need the maximum weight for all animals, or the average for each plot? 
 As the diagram below shows, we want to perform the operation across an axis:
 
-To support this, in R we can use the `apply` function:
+To support this, in R we can use the `apply` or 'tapply' function:
+tapply() takes a vector, so we'll use that
 
 
 ```r
-help(apply)  #or ?apply
+help(tapply)  #or ?apply
 ```
 
 
 Apply allows us to repeat a function on all of the rows (1), columns (2), or both(1:2) of an array or matrix.
 
-If each row is a patient, and we want to know each patient's average inflammation, we will need to iterate our method across all of the rows. 
-	
+What if you wanted to now go on and calculate the average weight of each species.
+You could do this one by one, but you can actually do it all at once with the tapply() function.
+
+The format is 
+
+tapply(data_you_want_to_calculate, factor_to_sort_on, function)
+
 
 ```r
-avg_inflammation = apply(dat, 2, mean)
+tapply(dat2$wgt, dat2$species, mean)
 ```
 
 
+Now we can put all the means into a variable
+
+
+```r
+species_means <- tapply(dat2$wgt, dat2$species, mean)
+```
+
+
+
 ### Challenge  
-1. Find the maximum and minimum values for inflammation at each day (rows are patients, and columns are days).
+1. Find the maximum and minimum values for weight for each species
 2. Save these values to a varible.
 3. What is the length of your new variable?
 
 
-
-
-We can also create a vector of our study days (the number of columns in data)
-
-
 ```r
-tempo = c(1:40)
-# or
-tempo = c(1:ncol(dat))
+species_max <- tapply(dat2$wgt, dat2$species, max)
+species_min <- tapply(dat2$wgt, dat2$species, min)
 ```
 
-
-Notice that the object was named `tempo` instead of `time`. `time` is a R built-in function, and as good practice avoid giving existing function names to your objects. 
 
 Now that we have all this summary information, we can put it back together into a data frame that we can use for further analysis and plotting, provided they are the same length.
 
 
 
 ```r
-d.summary = data.frame(tempo, avg_inflammation, min_inflammation, max_inflammation)
+d.summary = data.frame(species_means, species_min, species_max)
 ```
 
 
-## Plotting  
-The mathematician Richard Hamming once said, "The purpose of computing is insight, not numbers," and the best way to develop insight is often to visualize data. Visualization deserves an entire lecture (or course) of its own, but we can explore a few features of R's base plotting package and ggplot2 here. 
+We can also do this with the aggregate function, which deals with the NA rows that we eliminated more nicely. This is a very useful function, and it puts the output in to a data frame rather than a list. 
+If you look at documentation for aggregate() there's a few different ways to write the function. This is one way.
 
-Lets use the average inflammation data that we saved and plot it over the study time. 
+The format is 
+aggregate(what-to-plot~what-you-want-it-sorted-by, data=the-dataset, function)
 
 
 ```r
-plot(tempo, avg_inflammation)
+mean_species <- aggregate(wgt ~ species, data = dat, mean)
 ```
 
-![plot of chunk unnamed-chunk-36](figure/unnamed-chunk-36.png) 
 
-
-The result is roughly a linear rise and fall, which is suspicious: based on other studies, we expect a sharper rise and slower fall. Let's have a look at two other statistics:
+Maybe we want to look at the data average per species per plot
 
 
 ```r
-plot(tempo, max_inflammation)
+aggregate(wgt ~ species + plot, data = dat, mean)
 ```
 
-![plot of chunk unnamed-chunk-37](figure/unnamed-chunk-371.png) 
 
-```r
-plot(tempo, min_inflammation)
-```
-
-![plot of chunk unnamed-chunk-37](figure/unnamed-chunk-372.png) 
-
-
-The maximum value rises and falls perfectly smoothly, while the minimum seems to be a step function. Neither result seems particularly likely, so either there's a mistake in our calculations or something is wrong with our data.
+Or we just want to look at the average of particular species in each plot. Then we can subset the data within the function
 
 
 ```r
-library(ggplot2)
-ggplot(d.summary, aes(tempo, avg_inflammation)) + geom_point()
+aggregate(wgt ~ species + plot, data = subset(dat, species == "DO"), mean)
 ```
-
-![plot of chunk unnamed-chunk-38](figure/unnamed-chunk-38.png) 
 
 
 __EXERCISES__
 
-1. Create a plot showing the standard deviation of the inflammation data 
-for each day across all patients.
+1. Create a data frame with the standard deviation of weight for each species
 
-2. Create a ggplot that shows the data as a line. As a histogram. etc.
+## Plotting  
+The mathematician Richard Hamming once said, "The purpose of computing is insight, not numbers," and the best way to develop insight is often to visualize data. Visualization deserves an entire lecture (or course) of its own, but we can explore a few features of R's base plotting package and ggplot2 here. 
+
+Lets use the average species data that we saved and plot it. 
+
+R has built in plotting functions
+
+
+```r
+barplot(mean_species$wgt, names.arg = mean_species$species)
+```
+
+![plot of chunk unnamed-chunk-47](figure/unnamed-chunk-47.png) 
+
+
+
+The axis labels are too big though, so you can't see them all. Let's change that
+
+```r
+barplot(mean_species$wgt, names.arg = mean_species$species, cex.names = 0.4)
+```
+
+![plot of chunk unnamed-chunk-48](figure/unnamed-chunk-48.png) 
+
+
+and change the color
+
+
+```r
+barplot(mean_species$wgt, names.arg = mean_species$species, cex.names = 0.4, 
+    col = c("blue"))
+```
+
+![plot of chunk unnamed-chunk-49](figure/unnamed-chunk-49.png) 
+
+
+
+__EXERCISES__
+
+1. Create a plot showing the standard deviation of the species data 
+2. Calculate the average weight by plot id
+3. Plot the average weight by plot and make the bars red
+
+
+
+
+
+There's lots of different ways to plot things. You can use
+
+```r
+help(barplot)
+```
+
+or search online
+
+There's also a plotting package called ggplot that adds a lot of functionality. I'm not going to go through it, but you can see a gallery of what's possible for plotting with ggplot.
+
+Basically, you can do almost anything, and you can spend infinite time refining it.
+
+
+
+
 
 ## Key Points
 
@@ -514,6 +654,4 @@ for each day across all patients.
 * Write a simple for loop 
 * Use base R and the `ggplot2` library for creating simple visualizations.
 
-## Next Steps
 
-Our work so far has convinced us that something's wrong with our first data file. We would like to check the other 11 the same way, but typing in the same commands repeatedly is tedious and error-prone. Since computers don't get bored (that we know of), we should create a way to do a complete analysis with a single command, and then figure out how to repeat that step once for each file. These operations are the subjects of the next two lessons.

@@ -1,0 +1,8 @@
+.Rproj.user
+R.Rproj
+.Rhistory
+.RData
+*.pyc
+*~
+.DS_Store
+.ipynb_checkpoints
