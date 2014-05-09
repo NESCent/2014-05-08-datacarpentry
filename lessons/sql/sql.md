@@ -158,10 +158,11 @@ which have species codes DM, DO, and DS we could combine the tests using OR:
    individuals caught on Plot 1 that weigh more than 75 g***
 
 
-Exporting results of queries
-----------------------------
-Getting the result of your query out to work with elsewhere is as easy
-as clicking the **Actions** button and choosing **Save Result to File**.
+Saving & Exporting queries
+--------------------------
+
+* Exporting:  **Actions** button and choosing **Save Result to File**.
+* Save: **View** drop down and **Create View** 
 
 
 Building more complex queries
@@ -220,7 +221,7 @@ to see genus and species.
     SELECT genus, species FROM species ORDER BY taxon ASC;
 
 We can do this because sorting occurs earlier in the computational pipeline than
-field.
+field selection.
 
 The computer is basically doing this:
 
@@ -229,13 +230,18 @@ The computer is basically doing this:
 3. Displaying requested columns or expressions.
 
 
+Order of clauses
+----------------
+The order of the clauses when we write a query is dictated by SQL: SELECT, FROM, WHERE, ORDER BY
+and we often write each of them on their own line for readability.
+
+
 ***Exercise: Let's try to combine what we've learned so far in a single query.
-Let’s go back to the surveys table and write a query to display the three date
+Using the surveys table write a query to display the three date
 fields, species ID, and weight in kilograms (rounded to two decimal places), for
 rodents captured in 1999, ordered alphabetically by the species ID.***
 
-The order of the clauses is dictated by SQL: SELECT, FROM, WHERE, ORDER BY
-and we often write each of them on their own line for readability.
+
 
 **BREAK**
 
@@ -248,11 +254,11 @@ calculating combined values in groups.
 Let’s go to the surveys table and find out how many individuals there are.
 Using the wildcard simply counts the number of records (rows)
 
-    SELECT COUNT(*) FROM individuals
+    SELECT COUNT(*) FROM surveys
 
 We can also find out how much all of those individuals weigh.
 
-    SELECT SUM(wgt) FROM individuals
+    SELECT COUNT(*), SUM(wgt) FROM surveys
 
 ***Do you think you could output this value in kilograms, rounded to 3 decimal
    places?***
@@ -263,7 +269,7 @@ There are many other aggregate functions included in SQL including
 MAX, MIN, and AVG.
 
 ***From the surveys table, can we use one query to output the total weight,
-   average weight, and the min and max weights?***
+   average weight, and the min and max weights? How about the range of weight?***
 
 Now, let's see how many individuals were counted in each species. We do this
 using a GROUP BY clause
@@ -272,7 +278,8 @@ using a GROUP BY clause
     FROM surveys
     GROUP BY species
 
-GROUPY BY tells SQL what field or fields we want to use to aggregate the data.
+GROUP BY tells SQL what field or fields we want to use to aggregate the data.
+If we want to group by multiple fields, we give GROUP BY a comma separated list.
 
 ***EXERCISE: Write queries that return:***
 ***1. How many individuals were counted in each year***
@@ -287,12 +294,6 @@ captured, ordered by the count
     GROUP BY species
     ORDER BY COUNT(species)
 
-***Exercise: Write a query that lets us look at which years contained the most
-   individuals and which had the least?***
-
-***Exercise: Write a query that shows us which species had the largest
-   individuals on average?***
-
 
 Joins
 -----
@@ -300,16 +301,16 @@ Joins
 To combine data from two tables we use the SQL JOIN command, which comes after
 the FROM command.
 
-We also need to tell the computer indicated which columns provide the link
-between the two tables using the word ON.  What we want is to join the data with
-the same species codes.
+We also need to tell the computer which columns provide the link between the two
+tables using the word ON.  What we want is to join the data with the same
+species codes.
 
     SELECT *
     FROM surveys
     JOIN species ON surveys.species = species.species_id
 
 ON is like WHERE, it filters things out according to a test condition.  We use
-the table.colname to tell the manager what column in which table we are
+the table.colname format to tell the manager what column in which table we are
 referring to.
 
 We often won't want all of the fields from both tables, so anywhere we would
@@ -339,3 +340,22 @@ could do something like
 
 Adding data to existing tables
 ------------------------------
+
+* Browse & Search -> Add
+* Enter data into a csv file and append
+* ODBC w/Access or Filemaker Pro (demo Base)
+    * Forms w/QAQC
+	* More portable backend
+
+
+Q & A or Database Design (review if time)
+-----------------------------------------
+
+1. Order doesn't matter
+2. Every row-column combination contains a single *atomic* value, i.e., not
+   containing parts we might want to work with separately.
+3. One field per type of information
+4. No redundant information
+     * Split into separate tables with one table per class of information
+	 * Needs an identifier in common between tables – shared column - to
+       reconnect (foreign key).
