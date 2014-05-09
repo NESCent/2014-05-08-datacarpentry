@@ -3,7 +3,6 @@ layout: lesson
 root: ../..
 title: Shell Scripts
 ---
-<div class="objectives" markdown="1">
 
 #### Objectives
 *   Write a shell script that runs a command or series of commands for a fixed set of files.
@@ -378,11 +377,8 @@ Of course, this introduces another tradeoff between flexibility and complexity.
 *   `bash filename` runs the commands saved in a file.
 *   `$*` refers to all of a shell script's command-line parameters.
 *   `$1`, `$2`, etc., refer to specified command-line parameters.
-*   Letting users decide what files to process is more flexible and more consistent with built-in Unix commands.
-
-</div>
-
-<div class="challenges" markdown="1">
+*   Letting users decide what files to process is more flexible and more
+    consistent with built-in Unix commands.
 
 #### Challenges
 
