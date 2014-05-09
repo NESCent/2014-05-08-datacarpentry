@@ -10,23 +10,20 @@ title: Shell Scripts
 *   Write a shell script that operates on a set of files defined by the user on the command line.
 *   Create pipelines that include user-written shell scripts.
 
-</div>
+We are finally ready to see what makes the shell such a powerful
+environment for data wrangling. It allows us to take the commands we
+repeat frequently and save them in files so that we can re-run all
+those operations again later by typing a single command.
 
-We are finally ready to see what makes the shell such a powerful programming environment.
-We are going to take the commands we repeat frequently and save them in files
-so that we can re-run all those operations again later by typing a single command.
-For historical reasons,
-a bunch of commands saved in a file is usually called a [shell script](../../gloss.html#shell-script),
-but make no mistake:
-these are actually small programs.
+For historical reasons, a bunch of commands saved in a file is usually
+called a [shell script](../../gloss.html#shell-script), but make no
+mistake: these are actually small programs.
 
-Let's start by putting the following line in the file `middle.sh`:
+Let's start by putting the following line in the file `numcols.sh`:
 
-<div class="file" markdown="1">
 ~~~
-head -20 cholesterol.pdb | tail -5
+head -n 1 surveys.csv
 ~~~
-</div>
 
 This is a variation on the pipe we constructed earlier:
 it selects lines 16-20 of the file `cholesterol.pdb`.
