@@ -1,7 +1,15 @@
 Databases using SQL
 ===================
 
-**If you don't have Firefox installed already please install it now**
+Setup
+-----
+
+1. Install Firefox
+2. Install the SQLite Manager add on **Tools -> Add-ons -> Search -> SQLite
+Manager -> Install -> Restart**
+3. Download the [Portal Database](https://github.com/ethanwhite/swc-bootcamps/raw/master/SQL/portal_mammals.sqlite)
+4. Open SQLite Manage **Firefox Button -> Web Developer -> SQLite Manager**
+
 
 Relational databases
 --------------------
@@ -14,14 +22,6 @@ Relational databases
 * The queries are distinct from the data, so if we change the data we can just
   rerun the query
 
-Getting setup
--------------
-
-1. Install Firefox
-2. Install the SQLite Manager add on **Tools -> Add-ons -> Search -> SQLite
-Manager -> Install -> Restart**
-3. Download the [Portal Database](https://github.com/ethanwhite/swc-bootcamps/raw/master/SQL/portal_mammals.sqlite)
-4. Open SQLite Manage **Firefox Button -> Web Developer -> SQLite Manager**
 
 The data
 --------
@@ -36,6 +36,20 @@ This is a real dataset that has been used in over 100 publications.  I've
 simplified it just a little bit for the workshop, but you can download the
 [full dataset](http://esapubs.org/archive/ecol/E090/118/) and work with it using
 exactly the same tools we'll learn about today.
+
+
+Database Design
+---------------
+
+1. Order doesn't matter
+2. Every row-column combination contains a single *atomic* value, i.e., not
+   containing parts we might want to work with separately.
+3. One field per type of information
+4. No redundant information
+     * Split into separate tables with one table per class of information
+	 * Needs an identifier in common between tables – shared column - to
+       reconnect (foreign key).
+
 
 Import
 ------
@@ -53,6 +67,7 @@ Import
 ***EXERCISE: Import the plots and species tables***
 
 You can also use this same approach to append new data to an existing table.
+
 
 Basic queries
 -------------
@@ -316,31 +331,6 @@ could do something like
     ON surveys.plot = plots.plot_id
     GROUP BY plots.plot_type
 
-
-Database Design
----------------
-
-1. Order doesn't matter
-2. No duplicate rows
-3. Every row-column combination contains one value
-4. One field per type of information
-5. No redundant information
-6. One table per class of information
-
-Each field in a database should store a single value.  Information should not be
-duplicated in a database.  Each table should be about a single subject (avoids
-unnecessary replication).  When naming fields, you should think about meaning,
-not presentation.
-
-When we divide our data between several tables, we need a way to bring it back
-together again. The key is to have an identifier in common between tables –
-shared columns.
-
-For example, the species ID is included in the surveys table, but we don’t know
-what the species ID stands for. That information is stored in the Species table
-and can be linked to if we need it.  This means that we don't have to record the
-full genus, species, and taxa information for the several thousand individuals
-of each species.
 
 Adding data to existing tables
 ------------------------------
