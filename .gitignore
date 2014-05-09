@@ -2,6 +2,7 @@
 R.Rproj
 .Rhistory
 .RData
+*.Rout
 *.pyc
 *~
 .DS_Store
