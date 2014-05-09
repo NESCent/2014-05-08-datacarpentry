@@ -87,7 +87,7 @@ SQL is case insensitive, but it helps for readability – good style.
 If we want more information, we can just add a new column to the list of fields,
 right after SELECT:
 
-    SELECT day, month, year FROM surveys;
+    SELECT year, month, day FROM surveys;
 
 Or we can select all of the columns in a table using the wildcard *
 
@@ -111,7 +111,7 @@ We can also do calculations with the values in a query.
 For example, if we wanted to look at the mass of each individual
 on different dates, but we needed it in kg instead of g we would use
 
-    SELECT month, day, year, wgt/1000.0 from surveys
+    SELECT year, month, day, wgt/1000.0 from surveys
 
 When we run the query, the expression ``wgt / 1000.0`` is evaluated for each row
 and appended to that row, in a new column.  Expressions can use any fields, any
@@ -121,7 +121,7 @@ example, we could round the values to make them easier to read.
     SELECT plot, species, sex, wgt, ROUND(wgt / 1000.0, 2) FROM surveys;
 
 ***EXERCISE: Write a query that returns
-             The day, month, year, speciesID and weight in mg***
+             The year, month, day, speciesID and weight in mg***
 
 Filtering
 ---------
@@ -155,7 +155,7 @@ which have species codes DM, DO, and DS we could combine the tests using OR:
 
 ***EXERCISE: Write a query that returns
    The day, month, year, species ID, and weight (in kg) for
-   individuals caught on Plot 1 that weigh more than 0.075 kg***
+   individuals caught on Plot 1 that weigh more than 75 g***
 
 Exporting results of queries
 ----------------------------
