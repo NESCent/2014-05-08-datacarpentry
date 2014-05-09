@@ -19,36 +19,22 @@ For historical reasons, a bunch of commands saved in a file is usually
 called a [shell script](../../gloss.html#shell-script), but make no
 mistake: these are actually small programs.
 
-Let's start by putting the following line in the file `numcols.sh`:
+Let's start by putting the pipeline in the file `numcols.sh`:
 
 ~~~
-head -n 1 surveys.csv
+$ expr `head -n 1 surveys.csv | tr -c -d , | wc -c` + 1
 ~~~
 
-This is a variation on the pipe we constructed earlier:
-it selects lines 16-20 of the file `cholesterol.pdb`.
-Remember, we are *not* running it as a command just yet:
-we are putting the commands in a file.
-
-Once we have saved the file,
-we can ask the shell to execute the commands it contains.
-Our shell is called `bash`, so we run the following command:
+Once we have saved the file, we can ask the shell to execute the
+commands it contains. Our shell is called `bash`, so we run the
+following command:
 
 ~~~
-$ bash middle.sh
+$ bash numcols.sh
 ~~~
-{:class="in"}
-~~~
-ATOM     14  C           1      -1.463  -0.666   1.001  1.00  0.00
-ATOM     15  C           1       0.762  -0.929   0.295  1.00  0.00
-ATOM     16  C           1       0.771  -0.937   1.840  1.00  0.00
-ATOM     17  C           1      -0.664  -0.610   2.293  1.00  0.00
-ATOM     18  C           1      -4.705   2.108  -0.396  1.00  0.00
-~~~
-{:class="out"}
 
-Sure enough,
-our script's output is exactly what we would get if we ran that pipeline directly.
+Sure enough, our script's output is exactly what we would get if we ran
+that pipeline directly.
 
 > #### Text vs. Whatever
 >
@@ -62,11 +48,11 @@ our script's output is exactly what we would get if we ran that pipeline directl
 > keyboard. When editing programs, therefore, you must either use a plain
 > text editor, or be careful to save files as plain text.
 
-What if we want to select lines from an arbitrary file?
-We could edit `middle.sh` each time to change the filename,
-but that would probably take longer than just retyping the command.
-Instead,
-let's edit `middle.sh` and replace `cholesterol.pdb` with a special variable called `$1`:
+What if we want to count columns in an arbitrary file? We could edit
+`numcols.sh` each time to change the filename, but that would probably
+take longer than just retyping the command. Instead, let's edit
+`numcol.sh` and replace `surveys.csv` with a special variable
+called `$1`:
 
 ~~~
 $ cat middle.sh
