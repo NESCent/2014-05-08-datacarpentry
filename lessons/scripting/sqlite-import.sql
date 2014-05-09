@@ -4,7 +4,7 @@
 .import surveys.csv surveys
 .headers on
 .output stdout
-SELECT species.genus, species.species, plots.plot_type, surveys.*
+SELECT species.genus, species.genus ||' '|| species.species AS speciesname, plots.plot_type, surveys.*
 FROM surveys
 JOIN species ON surveys.species = species.species_id
 JOIN plots ON surveys.plot = plots.plot_id
