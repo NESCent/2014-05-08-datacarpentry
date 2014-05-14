@@ -23,6 +23,16 @@ Relational databases
   rerun the query
 
 
+Database Management Systems
+---------------------------
+
+There are a number of different database management systems for relational
+data. We're going to use SQLite today, but basically everything we teach you
+will apply to the other database systems as well (e.g., MySQL, PostgreSQL, MS
+Access, Filemaker Pro). The only things that will differ are the details of
+exactly who to import and export data.
+
+
 The data
 --------
 
