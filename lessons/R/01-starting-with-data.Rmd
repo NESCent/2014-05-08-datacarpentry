@@ -564,6 +564,19 @@ There's also a plotting package called ggplot that adds a lot of functionality. 
 
 Basically, you can do almost anything, and you can spend infinite time refining it.
 
+If you wanted to output this plot do a pdf rather than to the screen, you can 
+specify where you want the plot to go with the 'pdf' command. If you wanted
+it to be a jpeg, you would set it as 'jpeg'
+
+Be sure to add the 'dev.off()' command at the end.
+That command makes it so that the plots go back to getting printed within R. 
+Otherwise every new plot you make will get printed to that pdf.
+
+````{r}
+pdf("R_plot.pdf")
+barplot(mean_species$wgt, names.arg=mean_species$species, cex.names=0.4, col=c("blue"))
+dev.off()
+```
 
 
 
