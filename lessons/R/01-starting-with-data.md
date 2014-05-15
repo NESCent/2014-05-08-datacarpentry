@@ -619,8 +619,6 @@ __EXERCISES__
 
 
 
-
-
 There's lots of different ways to plot things. You can use
 
 ```r
