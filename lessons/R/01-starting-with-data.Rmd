@@ -9,9 +9,13 @@ and the columns represent record_id,month,day,year,plot,species,sex,wgt
 The first few rows of our first file look like this:
 
 "63","8","19","1977","3","DM","M","40"
+
 "64","8","19","1977","7","DM","M","48"
+
 "65","8","19","1977","4","DM","F","29"
+
 "66","8","19","1977","4","DM","F","46"
+
 "67","8","19","1977","7","DM","M","36"
 
 ### We want to:
@@ -41,10 +45,10 @@ Importing a library is like getting a piece of lab equipment out of a storage lo
 and setting it up on the bench. 
 Once it's done, we can ask the library to do things for us.
 
-To load our inflammation data, we need to locate our data.
+To load our survey data, we need to locate our data.
 We will use `setwd()` and `read.csv()`. These are built-in functions in R. Let's check out the help screen.
 
-* download the inflammation file
+* download the data file
 * put it in your working directory for these exercises
 
 ```{r, eval=FALSE}
@@ -83,13 +87,8 @@ and do arithmetic with it:
 2.2 * weight_kg
 ```
 
-We can use the function `paste` to print several things at once, if we separate them with commas.
+We can also change a variable's value by assigning it a new one and print out the information using 'paste' to add text and values together:
 
-```{r}
-paste('weight in pounds:', 2.2 * weight_kg)
-```
-
-We can also change a variable's value by assigning it a new one:
 
 ```{r}
 weight_kg <- 57.5
@@ -148,6 +147,7 @@ dat <- read.csv('data/surveys.csv', header = TRUE)
 
 This statement doesn't produce any output because assignment doesn't display anything. If we want to check that our data has been loaded, we can print the variable's value:
 
+
 ```{r}
 dat
 ```
@@ -166,10 +166,17 @@ First, let's ask what type of thing data refers to:
 ```{r}
 class(dat)
 str(dat)
+summary(dat)
 ```
 
-The output tells us that data currently is a data.frame in R. 
+The class output tells us that data currently is a data.frame in R.
+
 This is similar to a spreadsheet in excel, that many of us are familiar with using.
+
+The str output tells us what columns there are and what type they are.
+
+The summary output summarizes our columns and shows us the range of our values.
+
 
 ### data frames
 are the de facto data structure for most tabular data and what we use for statistics. They can have a mix of data types, e.g.characters, integers, factors. 
@@ -179,7 +186,6 @@ Data frames can have additional attributes such as `rownames()`, which can be us
 Some additional information on data frames:
 
 * Usually created by `read.csv()` and `read.table()`.
-* Can convert to matrix with `data.matrix()`
 * Coercion will be forced and not always what you expect.
 * Can also create with `data.frame()` function.
 * Find the number of rows and columns with `nrow(dat)` and `ncol(dat)`, respectively.
@@ -222,6 +228,8 @@ and it is an integer, but in our case we want it to be a factor. Basically it's 
 dat$plot <- as.factor(dat$plot)
 ```
 
+
+In RStudio we can also import data through the Tools -> Import Dataset menu. This lets us select the data types and delimiters as we import it. So, if we did it this way, we wouldn't have to change the variable attributes like this.
 
 ### Indexing
 
@@ -312,8 +320,14 @@ will show you the column names and the type of data in them
 If we do this, we can see for instance that there are 48 species
 Factor w/ 48 levels means there are 48 different versions of that factor
 
-So, let's see how many of each species we have
 
+So, let's get a list of all the species. The 'unique' command tells us all the
+unique names in that column.
+```{r}
+unique(dat$species)
+```
+
+Now let's see how many of each species we have
 ```{r}
 table(dat$species)
 ```
@@ -344,7 +358,7 @@ provides a function na.omit() that will omit NAs from your data.
 How many animals would we omit. We can look at how many animals we have overall and subtract how many we have after the NAs are omitted.
 
 Because data is in a vector, when we want to know how much of something we have
-we ask how long it is with the length() function
+we ask how long it is with the length() function. 
 
 ```{r}
 length(dat$wgt)
@@ -440,6 +454,9 @@ Now we can put all the means into a variable
 species_means <- tapply(dat2$wgt, dat2$species, mean)
 ```
 
+We still get NAs. That's because of the way that R keeps track of NAs when
+you're converting data frames. There are ways to get around that for the apply
+function, but we can use the aggregate function instead, which we'll cover next.
 
 ### Challenge  
 1. Find the maximum and minimum values for weight for each species
@@ -449,7 +466,12 @@ species_means <- tapply(dat2$wgt, dat2$species, mean)
 ```{r}
 species_max <- tapply(dat2$wgt, dat2$species, max)
 species_min <- tapply(dat2$wgt, dat2$species, min)
+length(species_max)
+length(species_min)
 ```
+
+
+
 
 Now that we have all this summary information, we can put it back together into a data frame that we can use for further analysis and plotting, provided they are the same length.
 
@@ -484,6 +506,11 @@ __EXERCISES__
 
 1. Create a data frame with the standard deviation of weight for each species
 
+```{r}
+sd_species <- aggregate(wgt~species, data=dat, sd)
+```
+
+
 ## Plotting  
 The mathematician Richard Hamming once said, "The purpose of computing is insight, not numbers," and the best way to develop insight is often to visualize data. Visualization deserves an entire lecture (or course) of its own, but we can explore a few features of R's base plotting package and ggplot2 here. 
 
@@ -511,10 +538,21 @@ barplot(mean_species$wgt, names.arg=mean_species$species, cex.names=0.4, col=c("
 __EXERCISES__
 
 1. Create a plot showing the standard deviation of the species data 
+
+
+```{r}
+barplot(sd_species$wgt, names.arg=sd_species$species)
+```
+
 2. Calculate the average weight by plot id
+```{r}
+plot_mean <- aggregate(wgt~plot, data=dat, mean)
+```
+
 3. Plot the average weight by plot and make the bars red
-
-
+```{r}
+barplot(plot_mean$wgt, names.arg=plot_mean$species, col=c("red"))
+```
 
 There's lots of different ways to plot things. You can use
 ```{r}

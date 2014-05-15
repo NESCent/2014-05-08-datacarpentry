@@ -8,7 +8,9 @@ title: Programming with R
 
 There are several files and directories in this respository
 
-* R-lesson.Rmd - the lesson as we did it in the workshop
+* 00-first-timers.Rmd - the R intro including information on data types
+
+* 01-starting-with-data.Rmd - the lesson we went through with the data
 
 * data - the data used in the lesson
 
