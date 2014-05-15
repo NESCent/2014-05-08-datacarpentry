@@ -353,9 +353,18 @@ Adding data to existing tables
 
 * Browse & Search -> Add
 * Enter data into a csv file and append
-* ODBC w/Access or Filemaker Pro (demo Base)
+
+
+Other database management systems
+---------------------------------
+
+* Access or Filemaker Pro
+    * GUI
     * Forms w/QAQC
-	* More portable backend
+	* But not cross-platform
+* MySQL/PostgreSQL
+    * Multiple simultaneous users
+	* More difficult to setup and maintain
 
 
 Q & A or Database Design (review if time)
