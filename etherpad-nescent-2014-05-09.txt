@@ -1,0 +1,521 @@
+Welcome to Data Carpentry
+
+We will use this Etherpad to share links and snippets of code, take notes, ask and answer questions, and whatever else comes to mind.
+The page displays a screen with three major parts:
+
+* The left side holds today's notes: please edit these as we go along.
+* The top right side shows the names of users who are logged in: please add your name and pick the color that best reflects your mood and personality.
+* The bottom right is a real time chat window for asking questions of the instructor and your fellow learners.
+
+
+Post assessment survey
+https://docs.google.com/forms/d/1wvGxtEyYFgNtRrGUbjTJeQAbiB0SEjKhlrCYvsv9XcY/viewform?usp=send_form
+
+
+* http://nescent.github.io/2014-05-08-datacarpentry/
+* DATA: https://github.com/NESCent/2014-05-08-datacarpentry/raw/master/lessons/R/Rfiles.zip
+* twitter: #datacarpentry
+
+SQL Database: https://github.com/NESCent/2014-05-08-datacarpentry/raw/master/data/portal_mammals.sqlite
+
+CSV Data:
+* https://github.com/NESCent/2014-05-08-datacarpentry/raw/master/data/surveys.csv
+* https://github.com/NESCent/2014-05-08-datacarpentry/raw/master/data/plots.csv
+* https://github.com/NESCent/2014-05-08-datacarpentry/raw/master/data/species.csv
+* SQL OUTPUT: https://github.com/NESCent/2014-05-08-datacarpentry/raw/master/data/SurveyDataLatinBinomialsRodents.csv
+* RESULT.CSV: https://raw.githubusercontent.com/NESCent/2014-05-08-datacarpentry/master/data/result.csv
+
+LINKS
+ * R tutorials: 
+   * http://rforcats.net/
+   * http://www.cyclismo.org/tutorial/R/index.html
+ * Google refine tutorial: http://www.davidhuynh.net/spaces/nicar2011/tutorial.pdf
+ * bash scripting guides:
+   * intro: http://tldp.org/HOWTO/Bash-Prog-Intro-HOWTO.html
+   * advanced: http://tldp.org/LDP/abs/html/
+   * Stack Overflow: http://stackoverflow.com/questions/tagged/bash
+ * Local tech meetups:
+   * Triangle Python Users Group: http://trizpug.org/
+   * Girl Develop IT: http://girldevelopit.com/chapters/raleigh-durham
+ * Orielly books - the headfirst series is geared towards non-techies.
+
+
+To start, please add yourself to the attendee list below:
+
+and fill out the pre-workshop survey
+https://docs.google.com/forms/d/1YoIj8nSE5SGtFCuN6loicwyyVHSIjSgBagO4WImIN5Y/viewform?usp=send_form
+
+* Instructor (discipline, institution, twitter / website)
+    * Karen (phylogenetics, NESCent, @kcranstn)
+    * Tracy (microbial ecology, bioinformatics, @tracykteal)
+    * Ethan (macroecology, @ethanwhite)
+    * Hilmar (bioinformatics, @hlapp)
+
+ * Helpers
+   * Darren (System Administrator, iPlant Collaborative, @iPlantCollab @netscruff)
+   * Debbie Paul (Technology Specialist, @iDigBio, @idbdeb)
+   * Mike Smorul (Asst Director Computing Services, @SESYNC, @msmorul)
+   * Matthew Collins (System administrator, iDigBio)
+   * Kevin Love (IT Team, iDigBio, @kevinjlove)
+
+Participants
+ * Sandra Cooke (aquatic ecology; High Point University)
+ * JohnBruno (marine/macro/cons-ecology; UNC Chapel Hill) www.johnfbruno.com @johnfbruno
+ * Karin Pfennig (behavioral and evolutionary ecology, UNC Chapel Hill)
+ * Yuxiang Liu@UNC-Chapel Hill Google Refine could be used for cleaning of data.
+ * Josh Martin (RNA structure, NESCENT)
+ * Cari Ficken (plant community ecology, Duke) www.cdficken.weebly.com
+ * François Michonneau (@FrancoisInvert, http://francoismichonneau.net/) Sea cucumber systematics, Marine Biodiversity and maintainer of R-package phylobase
+ * http://cran.r-project.org/web/packages/phylobase/index.html
+ * Kate Hertweck (comparative genomics, evol bio, NESCent, @k8hert)
+ * Uri Gophna (Microbial Evolution and Ecology), NESCent & Tel Aviv University
+ * Vandana Yadav( vyadav@email.unc.edu) plant biology
+ * Lisa Jones (plant ecology & conservation; NC Arboretum)
+ * Nicolas Magain
+ * Joel Herndon (Duke Libraries- Data and GIS Services)
+ * Kathryn Picard (marine mycology/microbial ecology, Duke)
+ * Elen Oneal (plant evolutionary and quantitative genetics, Duke)
+ * Renee Johansen (mycology/microbial ecology and biogeography)   
+ * Anna Braswell (Wetland Ecology, Nicholas School of the Environment, Duke University)
+ * Raven Bier (Microbial Ecology/Biogeochemistry, Biology, Duke)
+ * Emilie Lefevre (Micobial Ecology/Environmental Engineering/Pratt School, Duke University)
+ * Debra Murray (Duke University)
+ * Rodolfo Zentella, Biology Department, Duke
+
+Data files for the course:
+* http://esapubs.org/archive/ecol/E090/118/metadata.htm
+* blog about this research: https://portalproject.wordpress.com/ 
+* note: have folks download in advance of actually needing it!
+
+---------------------
+
+Terminal
+.quit (get out of sqlite)
+root directory/users directory
+ - in unix this is /, akin to your c:\ drive in windows
+   - ex: /home/msmorul/datacarpentry
+ - relative path, how to get to some directory from where my current directory is
+   - assume current directory is /home/msmorul/datacarpentry
+   - relative directory (/home/msmourl/datacarpentry/tempdirectory) is just 'tempdirectory'
+
+cd
+mkdir (make directory)
+gitbash: command --help (ex: ls --help)
+Tab Completion - hit tab to auto-complete directories for many commands (ie, ls, cd, etc)
+  - if there is more than one file w/ similar names (ie, datacarpentry, datasources) it will complete the 'data' part and stop until you the next part (ie, datac) then you can tab-complete the rest
+          -using tab to autocomplete not only is faster, but helps prevent typos
+period (.) - shortcut in bash referring to the current directory
+   * ie, cp /home/msmorul/data.csv . (copy the data.csv in /home/msmorul/file to my current directory)
+/ 
+redirection ( > ) - send the output of a command to some file
+   * head -n 100 really_really_big_file.csv > first_100_lines.csv
+   * will take the first 100 lines (from head) and via > save it to a file called first_100_lines.csv
+pipe ( | ) - like redirect, except send to another command rather than a file
+   * ls *.csv | wc -l ( list all files ending in 'csv', send that as input to 'wc' which will count everything. End result: how many files end in 'csv' in current directory
+Wildcards ( * ) - select files matching some pattern, 
+   * wc -l *.csv - run wc on every files ending in .csv in the current directory
+history - bash remembers what you did!
+   * history command shows all you typed (good and bad) 
+   * up/down arrows, pull back last command you typed
+   * rerun a history comand. !number (ie, !535) runs command 535 you typed, use the numbers that the 'history' command shows.
+     * If you change directories and execute a previous command it will execute in the current directory not the directory you were in when you first ran the command
+home directory ( ~ ) - shortcut to get back to your home directory, ie, cd ~ is the same as cd /home/msmorul 
+Ctrl c - escapes/cancels command and brings you back to $
+
+
+Bash Commands:
+ * ls - list files in current directory (ex: ls -or- ls directory_name
+   *  -l (list details, ls -l )
+   * -h (human readable, ie, kilobytes, megabytes, etc)
+ * nano - text editor
+ * pwd - print working directory
+ * mkdir - make directory (ie, mkdir datacarpentry)
+ * cd - change directory (ie, cd datacarpentry)
+ * man - manual page for command (type q to get out of man page)
+ * cp - copy (cp existing_file new_file)
+   * -i flag, interactive, it will prompt you if you are trying to overwrite
+ * mv - move (mv existing_file renamed_file)
+ * rm - remove (rm existing_file): be careful! No way to undo! (No trashcan!)
+   * use -i flag for interactive version (safer)
+   * danger, danger flags: -r and -f and rm /
+ * wc - word count (wc filename)
+   * -l count lines (wc -l mydata.csv)
+ * head - print the top 10 lines of a file
+   * -n <number> (head -n 5, print first 5 lines)
+ * tail - print the last 10 lines of a file
+   * -n <number> (tail -n 5, print last 5 lines)
+ * history - shows many previous commands, also up/down arrow to scroll through them
+ * cat - print the contents of a file (cat reasonably_sized_text_file.csv)
+   * Really only good for text files (.xls produces gibberish, .csv produces readable stuff)
+ * cut  - cut fields separated by some character
+   * -d what to separate on (ie, -d, )
+   * -f what fields to print, starting at 1
+   * cut -f 1-4 -d, myfile.csv (print columns 1-4)
+ * grep - search for lines containing something (grep 1978 filename.csv) grep doesn't know about columns or context of data. Its like 'find' in MS word
+   * -i ignore upper/lowercase
+   * -w match a whole word (ie, 1978 vs 23197834, or data vs datacarpentry)
+ * uniq - remove duplicate cases that are next to each other (ie, AA AA CC BB AA becomes AA CC BB AA)
+ * sort - sort list of items (case sensitive)
+   * -i ignore case
+   * -n assume you're working with numbers
+ * find - find all files in a directory
+   * find . -type f -name "*.R" -print
+   * 
+
+ * uniq + sort = everything that is unique (AA AA CC BB AA  becomes AA BB CC)
+ * Pipes (the | character) - Sends the output of the command on the left to the input of the command on the right
+   * ls | wc -l (list files in current directory, send that to wc which counts the number of lines giving us the number of files in the current directory)
+
+Why not use the gui to move files?
+ * You are manipulating files on a remote Linux server (computer cluster)
+ * real life example: we had an external hard drive with 355 shapefiles hidden in 4000 directories. We found them and copied them all to one directory in 30s for the researcher so he could open all in arcmap. Point, click open would have taken the entire day.
+
+Example:
+
+Find all python files where i used the csv library.
+1. look for all python files
+2. grep for 'import csv'
+ 
+ This does not word: find -name "*.py" | grep "import csv"
+   why: searches file names, not contents
+ 
+ grep -w "import csv" $(find ~/documents -name "*.py" -print )
+
+Exercise:
+
+Using a pipe and a redirection create a file that contains lines 200-300 of the Portal Rodents file
+
+head -n 300 Portal_rodents_19772002.csv | tail -n 100 > 200to300lines.csv
+
+----------------------
+Day 1 Afternoon Notes
+https://github.com/NESCent/2014-05-08-datacarpentry/blob/master/lessons/R/Rfiles.zip (click Raw to download)
+ - windows users, after download, right click, extract all
+
+R Notes/Shortcuts
+ * # - is a comment in R, anything after it is ignored (ie, # here's what this does)
+ * print - print out something (ie, print("say hello") will print 'say hello)
+ * Assigning variables ( <- ) read it as shove everything to the right of <- into the thing on the left
+   *   a <- 3+5
+ * typing a variable (ie, a ) will print it, same as print(a)
+ * Naming variables: make them mean something!! Don't just use 'a' you'll forget what you wanted in a
+   * your colleagues will hate you
+ * c function - says the thing inside it is a string
+   * hello <- c("hello world")
+   * hello <- "hello world"  (also works!)
+ * Classes, are types of things, all data is made up these things:
+   * characters
+   * numeric values
+   * integers
+   * logical (true or false)
+   * complex
+ * typeof(variable_name) - shows what something is
+   * typeof(hello) shows 'character'
+ * Vectors - lists of things
+   * y <- 1:10 will give you [1,2,3,4,5,6,7,8,9,10]
+   * the : tells R to fill in the numbers for you, use a range
+   * vectors can be characters or numbers or other classes
+     * z < ("ethan","hilmar"...)
+ * z has all those values
+     * typeof shows character
+ * Dataframes
+   * What you will use most of the time in R. Its your entire xls in memory
+   * You can load excel data directly into R using read.csv
+   * when you need to refer to a column, you can refer either the name of it (ie, weight, sex, etc) or its position 1,2,3
+     * By Name: dat$sex
+     * By Location/Index: dat[7]
+   * colnames(dat) - show the column names
+   * Dataframes can have holes, missing values. R fills them as N/A
+     * na.omit(weight)
+     * weight <- na.omit(weight)
+ * setcwd - set working directory (like cd in bash)
+   * setwd("~/Downloads/Rfiles/data")
+   * or session menu, set working directory, choose directory (probably easier!)
+     * you will see your working directory on the lower right
+ * read.csv("surveys.csv")
+   * loads file, but doesn't store it anywhere in memory!, assign it to something
+   * dat <- read.csv("surveys.csv"), loads everything, but we have headers
+   * dat <- read.csv("surveys.csv",header=TRUE)
+ * str(dat) - show summary
+ * dat[row,column] - show indifvidual cell
+   * dat[4,5]
+ * R is 1 indexed, not 0 (C, java, python all start counting at 0)
+     * you can ask about memory, very boring explanation, :(
+ * length(variable) - how many rows are in a variable vector
+ * nrow(variable) - how may rows in a data frame
+
+Stats in R!!! 
+ * Average over a column - mean
+ * min, max for a column, find min and max
+ * sd - standard deviation in r sd(speciesDO$wgt)
+
+Apply in R (tapply, rapply, squirrelapply!)
+ * syntax: tapply(measured value, factor, function)
+ * tapply(dat2$wgt,dat2$species, mean)
+ * sort on species calculate mean from wgt columns
+ * 
+tapply vs aggregate, tapply returns a vector, aggregate a dataframe
+
+mean_species <- aggregate(wgt ~ species + plot, data=dat2, mean)
+barplot(mean_species$wgt,names.arg = mean_species$species)
+
+Plotting in R:
+ - https://www.harding.edu/fmccown/r/
+ Good R tutorial: http://rforcats.net/
+ 
+ R Markdown, for documenting your code beyond just comments
+  - good to record what you did, aids others in reproducing your results!
+
+Exercise:
+Get the 7th Row 
+    dat[7,]
+get the 7-9th row
+    dat[7:9,]
+Bonus - get the 4th row and 9th row
+ * dat[c(4,9),]
+
+------------------------------------
+Day 2
+
+ * https://github.com/NESCent/2014-05-08-datacarpentry/blob/master/data/portal_mammals.sqlite
+
+MySQL is a relational database. Fields have type (integer, char, varchar, ...).
+A row in a table, is a record.
+
+We store the data in a place separate from where we do things with the data
+- It means it you can't accidentally do something bad to your data while you're manipulating it
+- If you add new data, you can easily ask the question again. You've already set up how to answer the question
+
+How do you build a database
+4 basics rules
+"Database normalization"
+1) Order shouldn't matter; neither row or column order should matter; most data we use in the sciences satisfies that rule
+
+2) One value, an atomic value, per cell
+
+3) One column per type of information
+      multiple rows if you have multiple e.g. habitats
+Instead of 
+species  habitat1     habitat2     habitat3
+AH        woodland   grassland   swamp
+Do
+species    habitat
+AH          woodland
+AH          grassland
+AH          swamp
+
+4) No redundant information; or minimize the amount of redundant information
+ 
+Importing data:
+Once you have data in .csv it's relatively straightforward to put it in to a database
+
+Question: If you have a lot of Excel files you need to convert to CSV is there a way to batch process, so you don't have to open them each in Excel and convert them?
+Ethan: There are some ways to import Excel files in to Python or R and then convert them. Be careful with dates in R, and there can be some strange formatting so check them. Also, maybe some command line scripts available, but always check conversion.
+Karen: On Macs there's a tool called automated where you can write workflows and you can write a workflow to convert Excel to CSV. Talk to her for more info.
+
+Question: Are commands case sensitive? 
+Ethan: No, they're not, but it's an example of good practice that communicates information because you can easily see the name of the commands and the tables
+
+Question: Can you open multiple databases at once? What is the 'surveys' here.
+Ethan: In this case 'survey' is a table, but you could have tables from multiple databases
+
+The next thing you can do with databases is filtering
+
+Question: When do you need quotes in search queries?
+If things you're searching for a are a string, they need "". If they're a number they don't.
+
+Question: How do we save the outcome of the queries?
+Click 'Action' -> 'Save Results to CSV'
+
+How do we store the queries?
+Click on 'View' -> 'Create View'
+
+The view is storing a question, the CSV files are storing an output. The View gets stored with the database.
+
+As you're writing a query with different component, check the output as you add new components to see if you're getting what you think you're getting. If you have a big database this can be a challenge, so if you have a big database, build and test your queries on a smaller portion of the database. 
+
+It's kind of amazing the number of things that crawl in to a small metal box if you put it in the middle of the desert.
+
+The order of the commands is important. Must be 
+SELECT 
+FROM 
+ORDER
+
+Aggregate functions in SQL will ignore null values
+That's generally fine, but for COUNT that can be tricky, so generally just COUNT on *
+
+Know precisely what your question is before you write your queries
+
+SQL is eager to please. It wants to give you an answer to the question you asked. 
+
+Question: Is there a way to exclude certain things in a query rather than ask for a set of things?
+Use !=
+SELECT * FROM surveys WHERE species!="DM"
+or SELECT * FROM surveys WHERE NOT species="DM"
+or SELECT * FROM surveys WHERE species IS NOT "DM"
+
+There's two ways to think about filtering
+We can filter before we group the data, or we can do it after
+
+Need to have columns that are the same in two tables to be able to join them
+
+Question: Does it matter the order of the join?
+For inner joins it doesn't matter. Joins will only return rows that don't have null values in each table.
+
+Question: What if you wanted to just see the possible values for a column?
+Use the DISTINCT command
+e.g.
+SELECT DISTINCT taxa
+FROM species;
+
+Question: What if I want to select things that are like a particular word?
+Use LIKE
+e.g.WHERE species.taxa LIKE "Rodent%"
+
+
+Exercise: Write a query that returns a year, month, species and weight in mg.
+
+data base view: a way to store a question, it always returns current data
+
+
+SQL Commands:
+ * SELECT - pull information out of a database
+   * SELECT columns FROM table WHERE some condition ORDER BY another_column;
+     * select year from surveys;
+     * SELECT year, month, day FROM surveys;
+     * SELECT * from surveys WHERE species="DM"
+       * return all columns, but limit it to rows where the species column is DM
+   * * refers to all columns 
+     * SELECT * from surveys;
+   * DISTINCT - select unique values
+     * select distinct species from surveys;
+   * COUNT - count number of rows returned
+     * select count(*) FROM surveys;
+   * SUM - 
+   * you can process data in the select
+     * select year, month, wgt / 1000.0 from surveys;
+       * the .0 says this is a number w/ decimal places, rounding to integers returns nada
+   * WHERE clause - filter your results
+     * = (ie species = 'DM')
+     * > < (ie, year > 1998 )
+     * AND/OR combine multiple conditions
+       * select * from surveys WHERE year >= 2000 AND species = 'DM'
+     * IN - where a the set of values is seen
+       * SELECT * FROM surveys WHERE (year >=2000) AND (species IN ("DM","DO","DS"));
+     * ORDER BY - sort he results based on a column
+       * SELECT * from species ORDER BY taxa
+       * ASC/DESC - ascending, descending
+       * SELECT * from species ORDER by taxa ASC
+   * SQL has a strict grammar
+     * SELECT
+     * FROM
+     * WHERE
+     * ORDER BY
+ 
+ R package for SQL: http://www.r-bloggers.com/make-r-speak-sql-with-sqldf/
+ 
+
+final query: (export this as csv for this afternoon's sessions)
+SELECT species.genus, species.species AS species_name, surveys.*
+FROM surveys JOIN species
+ON surveys.species = species.species_id
+WHERE species.taxa LIKE "Rodent%"; 
+
+
+Google refine tutorial: http://www.davidhuynh.net/spaces/nicar2011/tutorial.pdf
+
+Afternoon day 2
+ * shell scripting
+ * repository: https://github.com/NESCent/2014-05-08-datacarpentry/
+ * lessons: https://github.com/NESCent/2014-05-08-datacarpentry/tree/master/lessons/scripting
+ * in bash / gitbash, navigate to directory with the file surveys.csv
+ * get header file: head -n 1 surveys.csv
+ * pipe header to translate: head -n 1 surveys.csv | tr -d -c ,
+   * -d means delete
+   * -c is complement (everything that isn't a comma)
+ * and count commas: head -n 1 surveys.csv | tr -d -c , | wc -c
+ * and define the whole thing as an expression and add one: 
+   * expr `head -n 1 surveys.csv | tr -d -c , | wc -c` + 1
+   * notes: those are backticks ( ` ) not single quotes ( ' ); backtick key is below ESC
+ * Stack Overflow is your friend for learning about bash scripting
+   * http://stackoverflow.com/questions/tagged/bash
+ * create a new file called numcols.sh
+ * to run this: bash numcols.sh
+ * edit the file to include a positional argument: 
+   * expr `head -n 1 $1 | tr -d -c , | wc -c` + 1
+   * the $1 means "the first argument to the script"
+ * ok, moving on to chaining together our work in R and SQL
+
+
+List of new bash commands:
+ * tr (translate)
+ * expr (expression)
+ * less
+
+Various solutions to the Counting Columns shell script:
+for csvfile in $*
+do
+echo $(expr `head -n 1 $csvfile | tr -d -c , | wc -c` + 1) $csvfile
+done
+
+Slightly different version
+for csvfile in $*
+do
+ncol=`head -1 $csvfile | tr -d -c , | wc -c`
+echo $csvfile: $((ncol+1))
+done
+
+SQL Lite Commands
+
+Note: commands beginning with a . are sql lite only comments, select, etc are generic sql commands that will work on many different databases
+
+From the sqlite command prompt, you can run any of the SELECT commands you learned earlier today
+
+ * .quit - leave sqlite (in OS-X or unix, press ctrl-D)
+ * .mode csv
+   * change the mode to import csv files
+ * .import plots.csv plots
+   * load the plots.csv file into a table called 'plots'
+ * select * from plots;
+ * .output newfile.csv 
+   * tellsSQL lite to save the output from ant command to the newfile.csv file
+ * .header on - print header when outputting data
+ * select * from plots;
+ * the complete sql import script is here: 
+   * https://github.com/NESCent/2014-05-08-datacarpentry/blob/master/lessons/scripting/sqlite-import.sql
+
+You can save SQL commands to a script file so you can reproduce how you created your database
+
+piping sql script files 
+cat sqlite-data-import.sql | sqlite3
+
+barplot-figure.R
+https://github.com/NESCent/2014-05-08-datacarpentry/blob/master/lessons/scripting/barplot-figure.R
+
+ * Windows folks, run this in gitbash in order to setup to be able to call R from bash:
+   * export PATH=$PATH:/c/Program\ Files/R/R-3.1.0/bin
+
+ * invoking R from bash: R CMD BATCH barplot-figure.R
+   * output in barplot-figure.Rout
+   * plot in R_plot.pdf
+ * now, let's change the R file to use the output from the database
+
+When you're writing a program, often works best to first write the comments saying what
+it is you want to be doing, then write the code.
+
+Shell script
+
+#Load the data in to database, combine, filter, export
+cat sqlite-data-import.sql | sqlite3 > result.csv
+
+# for new versions of sqlite
+# cat sqlite-data-import-db.sql | sqlite3 portal_mammals.sqlite
+
+# Load in to R for analysis and plotting
+R CMD BATCH barplot-figure.R
+
+Post assessment survey
+https://docs.google.com/forms/d/1wvGxtEyYFgNtRrGUbjTJeQAbiB0SEjKhlrCYvsv9XcY/viewform?usp=send_form
+
+
+
