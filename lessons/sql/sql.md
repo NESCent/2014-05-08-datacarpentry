@@ -30,7 +30,7 @@ There are a number of different database management systems for relational
 data. We're going to use SQLite today, but basically everything we teach you
 will apply to the other database systems as well (e.g., MySQL, PostgreSQL, MS
 Access, Filemaker Pro). The only things that will differ are the details of
-exactly who to import and export data.
+exactly how to import and export data.
 
 
 The data
@@ -367,7 +367,7 @@ Other database management systems
 	* More difficult to setup and maintain
 
 
-Q & A or Database Design (review if time)
+Q & A on Database Design (review if time)
 -----------------------------------------
 
 1. Order doesn't matter
