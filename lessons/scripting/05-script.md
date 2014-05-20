@@ -19,6 +19,11 @@ For historical reasons, a bunch of commands saved in a file is usually
 called a [shell script](../../gloss.html#shell-script), but make no
 mistake: these are actually small programs.
 
+To learn how shell scripts are built and how they work, we build a
+shell script that takes as input a list of file names on the command
+line, and assuming that each file is in comma-delimited value (CSV)
+format, counts the number of columns and prints them to the terminal.
+
 Let's start by putting the pipeline in the file `numcols.sh`:
 
 ~~~
