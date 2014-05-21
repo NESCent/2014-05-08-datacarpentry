@@ -19,27 +19,65 @@ For historical reasons, a bunch of commands saved in a file is usually
 called a [shell script](../../gloss.html#shell-script), but make no
 mistake: these are actually small programs.
 
-To learn how shell scripts are built and how they work, we build a
+To learn how shell scripts are built and how they work, let's build a
 shell script that takes as input a list of file names on the command
 line, and assuming that each file is in comma-delimited value (CSV)
 format, counts the number of columns and prints them to the terminal.
 
-Let's start by putting the pipeline in the file `numcols.sh`:
+Generally speaking, the best way to build a shell script is
+incrementally, one command at a time, and by figuring out how to
+accomplish the desired task on a single given file first. This can
+typically be done on the command line interactively.
+
+So let's see how can count the number of columns in the file
+`surveys.csv`. First, intuitively the line with the column names also
+contains the information about the number of columns:
+
+~~~
+$ head -n 1 surveys.csv
+~~~
+
+If we could count the number of commas in this line, we'd (almost) have the number of columns. The tool `wc` can count characters:
+
+~~~
+$ echo ",,," | wc -c
+~~~ 
+
+> Question: Why does this show one more than the number of commas?
+
+If we could delete everything but the commas, we would have the desired input to `wc -c`. The tool `tr` (translate characters in one set to those in another) has a mode to accomplish this: with the `-d` switch it doesn't translate, but deletes the characters in the specified set from the input. We want to delete everything but commas. Instead of enumerating all characters that aren't comma, `tr` with the `-c` option allows us to say _"delete the complement of this set"_. Then our set of which to take the complement is the comma:
+
+~~~
+$ echo "12345abcde," | tr -c -d ,
+~~~
+
+> Question: Why is the result of enumerating all characters other than
+> the comma slightly different from taking the complement of a comma?
+>
+> ~~~
+> # taking the complement of comma:
+> $ echo "12345abcde," | tr -c -d ,
+> # expressly enumerate all characters to be deleted
+> $ echo "12345abcde," | tr -d 12345abcde
+> ~~~
+
+Now we can put the command together:
+
+~~~
+$ head -n 1 surveys.csv | tr -c -d , | wc -c
+~~~
+
+To get the actual number of columns, we only need to add 1. This can
+be accomplished using the `expr` command (which is built into bash):
 
 ~~~
 $ expr `head -n 1 surveys.csv | tr -c -d , | wc -c` + 1
 ~~~
 
-Once we have saved the file, we can ask the shell to execute the
-commands it contains. Our shell is called `bash`, so we run the
-following command:
-
-~~~
-$ bash numcols.sh
-~~~
-
-Sure enough, our script's output is exactly what we would get if we ran
-that pipeline directly.
+Now that we have the command working for one file, we can put it into
+a shell script. A shell script is essentially a text file of shell
+commands. Let's create open a new file in a text editor, put this one
+line into it, and save it as `numcols.sh`. 
 
 > #### Text vs. Whatever
 >
@@ -52,6 +90,16 @@ that pipeline directly.
 > nothing but the letters, digits, and punctuation on a standard computer
 > keyboard. When editing programs, therefore, you must either use a plain
 > text editor, or be careful to save files as plain text.
+
+We can now run this file as
+a shell script by passing it as an argument to `bash`, our shell:
+
+~~~
+$ bash numcols.sh
+~~~
+
+Sure enough, our script's output is exactly what we would get if we ran
+that pipeline directly.
 
 What if we want to count columns in an arbitrary file? We could edit
 `numcols.sh` each time to change the filename, but that would probably
