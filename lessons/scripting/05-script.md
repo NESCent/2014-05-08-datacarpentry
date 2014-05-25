@@ -91,8 +91,8 @@ line into it, and save it as `numcols.sh`.
 > keyboard. When editing programs, therefore, you must either use a plain
 > text editor, or be careful to save files as plain text.
 
-We can now run this file as
-a shell script by passing it as an argument to `bash`, our shell:
+We can now run this file as a shell script by passing it as an
+argument to `bash`, our shell:
 
 ~~~
 $ bash numcols.sh
@@ -101,6 +101,47 @@ $ bash numcols.sh
 Sure enough, our script's output is exactly what we would get if we ran
 that pipeline directly.
 
+> ### Execution permission and search path
+>
+> 'Normal' commandline programs (like `wc`, `ls`, etc) aren't executed
+>  by being passed to as an argument to the shell. Shouldn't this work
+>  for shell scripts, too, if they are programs like any other?
+>  The answer is it does, but some prerequisites have to be met (that
+>  for pre-installed programs we never have to worry about):
+>
+> 1. The shell needs to be able to find a program it is asked to
+>    execute. This is achieved by either putting the program into one
+>    of the directories listed in the `PATH` environment variable (or
+>    adding the directory in which the program is to the `PATH`), or
+>    by giving the full path to the program (even if it is in the
+>    current directory).
+>         ~~~
+>         $ ./numcols.sh
+>         ~~~
+>
+> 2. The program needs to be permitted to be executed by the
+>    user. Compare the following two:
+>
+>         ~~~
+>         $ ls -l /bin/ls
+>         $ ls -l numcols.sh
+>         ~~~ 
+>
+>    The permissions of a file are changed with `chmod`:
+>
+>         ~~~
+>         $ chmod ugo+x numcols.sh
+>         ~~~
+>
+> 3. The shell needs to know how to execute a program that is a
+>    script, i.e., it needs to know which interpreter to invoke for
+>    the script. The shell obtains this from the "hashbang" line,
+>    which must be the first non-comment, non-empty line in the
+>    script. The line starts with `#!` (hence the name) followed
+>    (without space) by the path to the program to invoke as
+>    interpreter, here `/bin/bash`: `#!/bin/bash`. We can add this
+>    line to the top of the file using a text editor.
+
 What if we want to count columns in an arbitrary file? We could edit
 `numcols.sh` each time to change the filename, but that would probably
 take longer than just retyping the command. Instead, let's edit
@@ -108,89 +149,31 @@ take longer than just retyping the command. Instead, let's edit
 called `$1`:
 
 ~~~
-$ cat middle.sh
+expr `head -n 1 $1 | tr -c -d , | wc -c` + 1
 ~~~
-{:class="in"}
-~~~
-head -20 $1 | tail -5
-~~~
-{:class="out"}
 
-Inside a shell script,
-`$1` means "the first filename (or other parameter) on the command line".
-We can now run our script like this:
+Inside a shell script, `$1` means "the first parameter on the command
+line".  We can now run our script like this:
 
 ~~~
-$ bash middle.sh cholesterol.pdb
+$ bash numcols.sh surveys.csv
+$ bash numcols.sh plots.csv
+$ bash numcols.sh species.csv
 ~~~
-{:class="in"}
-~~~
-ATOM     14  C           1      -1.463  -0.666   1.001  1.00  0.00
-ATOM     15  C           1       0.762  -0.929   0.295  1.00  0.00
-ATOM     16  C           1       0.771  -0.937   1.840  1.00  0.00
-ATOM     17  C           1      -0.664  -0.610   2.293  1.00  0.00
-ATOM     18  C           1      -4.705   2.108  -0.396  1.00  0.00
-~~~
-{:class="out"}
 
-or on a different file like this:
+This is already much better - we don't have to edit the script
+anymore. What if the script could take any number of files as
+parameters, and execute the column counting pipeline for each of them?
+This is concept of looping, one of the concepts that make scripts
+truly powerful.
 
-~~~
-$ bash middle.sh vitamin-a.pdb
-~~~
-{:class="in"}
-~~~
-ATOM     14  C           1       1.788  -0.987  -0.861
-ATOM     15  C           1       2.994  -0.265  -0.829
-ATOM     16  C           1       4.237  -0.901  -1.024
-ATOM     17  C           1       5.406  -0.117  -1.087
-ATOM     18  C           1      -0.696  -2.628  -0.641
-~~~
-{:class="out"}
-
-We still need to edit `middle.sh` each time we want to adjust the range of lines,
-though.
-Let's fix that by using the special variables `$2` and `$3`:
-
-~~~
-$ cat middle.sh
-~~~
-{:class="in"}
-~~~
-head $2 $1 | tail $3
-~~~
-{:class="out"}
-~~~
-$ bash middle.sh vitamin-a.pdb -20 -5
-~~~
-{:class="in"}
-~~~
-ATOM     14  C           1       1.788  -0.987  -0.861
-ATOM     15  C           1       2.994  -0.265  -0.829
-ATOM     16  C           1       4.237  -0.901  -1.024
-ATOM     17  C           1       5.406  -0.117  -1.087
-ATOM     18  C           1      -0.696  -2.628  -0.641
-~~~
-{:class="out"}
-
-This works,
-but it may take the next person who reads `middle.sh` a moment to figure out what it does.
-We can improve our script by adding some [comments](../../gloss.html#comment) at the top:
-
-~~~
-$ cat middle.sh
-~~~
-{:class="in"}
-~~~
-# Select lines from the middle of a file.
-# Usage: middle.sh filename -end_line -num_lines
-head $2 $1 | tail $3
-~~~
-{:class="out"}
-
-A comment starts with a `#` character and runs to the end of the line.
-The computer ignores comments,
-but they're invaluable for helping people understand and use scripts.
+> ### Commenting scripts
+> It may take the next person who reads `numcols.sh` a moment to
+> figure out what it does.  We can improve our script by adding some
+> [comments](../../gloss.html#comment) at the top. A comment starts
+> with a `#` character and runs to the end of the line.  The computer
+> ignores comments, but they're invaluable for helping people
+> understand and use scripts.
 
 What if we want to process many files in a single pipeline?
 For example, if we want to sort our `.pdb` files by length, we would type:
@@ -279,56 +262,6 @@ to re-use your work.
 The only caveat is that each time you modify the script,
 you should check that the comment is still accurate:
 an explanation that sends the reader in the wrong direction is worse than none at all.
-
-Second,
-suppose we have just run a series of commands that did something useful&mdash;for example,
-that created a graph we'd like to use in a paper.
-We'd like to be able to re-create the graph later if we need to,
-so we want to save the commands in a file.
-Instead of typing them in again
-(and potentially getting them wrong)
-we can do this:
-
-~~~
-$ history | tail -4 > redo-figure-3.sh
-~~~
-{:class="in"}
-
-The file `redo-figure-3.sh` now contains:
-
-<div class="file" markdown="1">
-~~~
-297 goostats -r NENE01729B.txt stats-NENE01729B.txt
-298 goodiff stats-NENE01729B.txt /data/validated/01729.txt > 01729-differences.txt
-299 cut -d ',' -f 2-3 01729-differences.txt > 01729-time-series.txt
-300 ygraph --format scatter --color bw --borders none 01729-time-series.txt figure-3.png
-~~~
-</div>
-
-After a moment's work in an editor to remove the serial numbers on the commands,
-we have a completely accurate record of how we created that figure.
-
-> #### Unnumbering
->
-> Nelle could also use `colrm` (short for "column removal") to remove the
-> serial numbers on her previous commands.
-> Its parameters are the range of characters to strip from its input:
->
-> ~~~
-> $ history | tail -5
->   173  cd /tmp
->   174  ls
->   175  mkdir bakup
->   176  mv bakup backup
->   177  history | tail -5
-> $ history | tail -5 | colrm 1 7
-> cd /tmp
-> ls
-> mkdir bakup
-> mv bakup backup
-> history | tail -5
-> history | tail -5 | colrm 1 7
-> ~~~
 
 In practice, most people develop shell scripts by running commands at the shell prompt a few times
 to make sure they're doing the right thing,
@@ -447,51 +380,3 @@ Of course, this introduces another tradeoff between flexibility and complexity.
 
     would print the name of the `.pdb` file in `/tmp/data` that has
     the most lines.
-
-3.  If you run the command:
-
-    ~~~
-    history | tail -5 > recent.sh
-    ~~~
-
-    the last command in the file is the `history` command itself, i.e.,
-    the shell has added `history` to the command log before actually
-    running it. In fact, the shell *always* adds commands to the log
-    before running them. Why do you think it does this?
-
-4.  Joel's `data` directory contains three files: `fructose.dat`,
-    `glucose.dat`, and `sucrose.dat`. Explain what a script called
-    `example.sh` would do when run as `bash example.sh *.dat` if it
-    contained the following lines:
-
-<table>
-  <tr>
-    <td valign="top">1.</td>
-    <td valign="top">
-<pre>
-echo *.*
-</pre>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">2.</td>
-    <td valign="top">
-<pre>
-for filename in $1 $2 $3
-do
-    cat $filename
-done
-</pre>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">3.</td>
-    <td valign="top">
-<pre>
-echo $*.dat
-</pre>
-    </td>
-  </tr>
-</table>
-
-</div>
