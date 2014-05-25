@@ -2,6 +2,7 @@
 R.Rproj
 .Rhistory
 .RData
+.Rapp.history
 *.Rout
 *.pyc
 *~
