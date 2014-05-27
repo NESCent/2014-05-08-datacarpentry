@@ -164,190 +164,145 @@ $ bash numcols.sh species.csv
 This is already much better - we don't have to edit the script
 anymore. What if the script could take any number of files as
 parameters, and execute the column counting pipeline for each of them?
-This is concept of looping, one of the concepts that make scripts
-truly powerful.
+This is the concept of looping, one of the concepts that make scripts
+truly powerful. This will also expand on variables, and variable
+substitution.
+
+We have already seen _positional variables_ such as `$1` that the
+shell substitutes for the nth parameter (the first for `$1`, and so
+forth). We can also assign values to variables for which we choose the
+name, and use their values subsequently in places where we need
+them. Variables in bash are assigned values with the `=` symbol, and
+the shell substitutes the variable's value if we prefix it with `$`:
+
+~~~
+$ myfile=surveys.csv
+$ echo $myfile
+$ expr `head -n 1 $myfile | tr -c -d , | wc -c` + 1
+~~~
+
+One of the most frequently used loops in bash is `for`. It loops over
+a specified list of values, and assigns each value in the list to a
+_loop_ variable one by one.
+
+~~~
+$ for f in surveys.csv plots.csv species.csv 
+> do
+>    expr `head -n 1 $f | tr -c -d , | wc -c` + 1
+> done
+~~~
+
+> #### Measure Twice, Run Once
+> 
+> A loop is a way to do many things at once&mdash;or to make many mistakes at
+> once if it does the wrong thing. One way to check what a loop *would* do
+> is to echo the commands it would run instead of actually running them.
+> 
+> _Exercise_: Change the loop above so that it echoes the command that
+> would be run, but doesn't run anything.
+
+> #### Follow the Prompt
+>
+> The shell prompt changes from `$` to `>` and back again as we were
+> typing in our loop. The second prompt, `>`, is different to remind
+> us that we haven't finished typing a complete command yet.
+>
+
+Instead of expressly enumerating files, we can also use filename expansion,
+like we do on the command line (such as `ls *.csv`):
+
+~~~
+$ for f in *.csv
+> do
+>    expr `head -n 1 $f | tr -c -d , | wc -c` + 1
+> done
+~~~
+
+> #### Spaces in Names
+> 
+> Filename expansion in loops is another reason you should not use
+> spaces in filenames.  Suppose our data files are named:
+> 
+> ~~~
+> plots v1.csv
+> surveys v1.csv
+> species v1.csv
+> ~~~
+> 
+> If we try to process them using:
+> 
+> ~~~
+> for f in *.csv
+> do
+>     ls -l $f
+> done
+> ~~~
+> 
+> then with older versions of Bash, or many other shells, `f` will
+> then be assigned the following values in turn:
+> 
+> ~~~
+> plots
+> v1.csv
+> surveys
+> v1.csv
+> species
+> v1.csv
+> ~~~
+>
+> That's a problem because there are no files named this way, and now
+> the same "file" appears multiple times.
+
+Coming back to the shell script, we can now change the command in the
+`numcols.sh` script to a loop. To get the list of things to loop over from the
+command line, we use `"$@"`, which expands to all parameters passed to
+the script, with each parameter forming an element of the list:
+
+~~~
+$ cat numcols.sh
+for f in "$@"
+do
+    expr `head -n 1 $f | tr -c -d , | wc -c` + 1
+done
+~~~
+
+We can now call this for all .csv files:
+
+~~~
+$ bash numcols.sh *.csv
+~~~
 
 > ### Commenting scripts
+>
 > It may take the next person who reads `numcols.sh` a moment to
 > figure out what it does.  We can improve our script by adding some
 > [comments](../../gloss.html#comment) at the top. A comment starts
 > with a `#` character and runs to the end of the line.  The computer
 > ignores comments, but they're invaluable for helping people
 > understand and use scripts.
+> 
+> Exercise: Add comments to the script so you know which line does what.
 
-What if we want to process many files in a single pipeline?
-For example, if we want to sort our `.pdb` files by length, we would type:
+The undesirable part left is that we don't really know (aside from
+guessing by order) which line of output is for which file.
 
-~~~
-$ wc -l *.pdb | sort -n
-~~~
-{:class="in"}
-
-because `wc -l` lists the number of lines in the files
-and `sort -n` sorts things numerically.
-We could put this in a file,
-but then it would only ever sort a list of `.pdb` files in the current directory.
-If we want to be able to get a sorted list of other kinds of files,
-we need a way to get all those names into the script.
-We can't use `$1`, `$2`, and so on
-because we don't know how many files there are.
-Instead, we use the special variable `$*`,
-which means,
-"All of the command-line parameters to the shell script."
-Here's an example:
-
-~~~
-$ cat sorted.sh
-~~~
-{:class="in"}
-~~~
-wc -l $* | sort -n
-~~~
-{:class="out"}
-~~~
-$ bash sorted.sh *.dat backup/*.dat
-~~~
-{:class="in"}
-~~~
-      29 chloratin.dat
-      89 backup/chloratin.dat
-      91 sphagnoi.dat
-     156 sphag2.dat
-     172 backup/sphag-merged.dat
-     182 girmanis.dat
-~~~
-{:class="out"}
-
-> #### Why Isn't It Doing Anything?
->
-> What happens if a script is supposed to process a bunch of files, but we
-> don't give it any filenames? For example, what if we type:
->
->     $ bash sorted.sh
->
-> but don't say `*.dat` (or anything else)? In this case, `$*` expands to
-> nothing at all, so the pipeline inside the script is effectively:
->
->     wc -l | sort -n
->
-> Since it doesn't have any filenames, `wc` assumes it is supposed to
-> process standard input, so it just sits there and waits for us to give
-> it some data interactively. From the outside, though, all we see is it
-> sitting there: the script doesn't appear to do anything.
-
-We have two more things to do before we're finished with our simple shell scripts.
-If you look at a script like:
-
-<div class="file" markdown="1">
-~~~
-wc -l $* | sort -n
-~~~
-</div>
-
-you can probably puzzle out what it does.
-On the other hand,
-if you look at this script:
-
-<div class="file" markdown="1">
-~~~
-# List files sorted by number of lines.
-wc -l $* | sort -n
-~~~
-</div>
-
-you don't have to puzzle it out&mdash;the comment at the top tells you what it does.
-A line or two of documentation like this make it much easier for other people
-(including your future self)
-to re-use your work.
-The only caveat is that each time you modify the script,
-you should check that the comment is still accurate:
-an explanation that sends the reader in the wrong direction is worse than none at all.
-
-In practice, most people develop shell scripts by running commands at the shell prompt a few times
-to make sure they're doing the right thing,
-then saving them in a file for re-use.
-This style of work allows people to recycle
-what they discover about their data and their workflow with one call to `history`
-and a bit of editing to clean up the output
-and save it as a shell script.
-
-#### Nelle's Pipeline: Creating a Script
-
-An off-hand comment from her supervisor has made Nelle realize that
-she should have provided a couple of extra parameters to `goostats` when she processed her files.
-This might have been a disaster if she had done all the analysis by hand,
-but thanks to for loops,
-it will only take a couple of hours to re-do.
-
-But experience has taught her that if something needs to be done twice,
-it will probably need to be done a third or fourth time as well.
-She runs the editor and writes the following:
-
-<div class="file" markdown="1">
-~~~
-# Calculate reduced stats for data files at J = 100 c/bp.
-for datafile in $*
-do
-    echo $datafile
-    goostats -J 100 -r $datafile stats-$datafile
-done
-~~~
-</div>
-
-(The parameters `-J 100` and `-r` are the ones her supervisor said she should have used.)
-She saves this in a file called `do-stats.sh`
-so that she can now re-do the first stage of her analysis by typing:
-
-~~~
-$ bash do-stats.sh *[AB].txt
-~~~
-{:class="in"}
-
-She can also do this:
-
-~~~
-$ bash do-stats.sh *[AB].txt | wc -l
-~~~
-{:class="in"}
-
-so that the output is just the number of files processed
-rather than the names of the files that were processed.
-
-One thing to note about Nelle's script is that
-it lets the person running it decide what files to process.
-She could have written it as:
-
-<div class="file" markdown="1">
-~~~
-# Calculate reduced stats for  A and Site B data files at J = 100 c/bp.
-for datafile in *[AB].txt
-do
-    echo $datafile
-    goostats -J 100 -r $datafile stats-$datafile
-done
-~~~
-</div>
-
-The advantage is that this always selects the right files:
-she doesn't have to remember to exclude the 'Z' files.
-The disadvantage is that it *always* selects just those files&mdash;she can't run it on all files
-(including the 'Z' files),
-or on the 'G' or 'H' files her colleagues in Antarctica are producing,
-without editing the script.
-If she wanted to be more adventurous,
-she could modify her script to check for command-line parameters,
-and use `*[AB].txt` if none were provided.
-Of course, this introduces another tradeoff between flexibility and complexity.
-
-<div class="keypoints" markdown="1">
+_Exercise_: Change the script so that it also prints the name of the
+file to which the column count applies.
 
 #### Key Points
 *   Save commands in files (usually called shell scripts) for re-use.
 *   `bash filename` runs the commands saved in a file.
-*   `$*` refers to all of a shell script's command-line parameters.
+*   `$@` refers to all of a shell script's command-line parameters.
 *   `$1`, `$2`, etc., refer to specified command-line parameters.
 *   Letting users decide what files to process is more flexible and more
     consistent with built-in Unix commands.
+*   A `for` loop repeats commands once for every thing in a list.
+*   Every `for` loop needs a variable to refer to the current "thing".
+*   Use `$name` to expand a variable (i.e., get its value).
+*   Do not use spaces, quotes, or wildcard characters such as '*' or '?' in
+    filenames, as it complicates variable expansion.
+*   Give files consistent names that are easy to match with wildcard
+    patterns to make it easy to select them for looping.
 
 #### Challenges
 
@@ -369,14 +324,9 @@ Of course, this introduces another tradeoff between flexibility and complexity.
     `uniq` to print a list of the unique species appearing in each of
     those files separately.
 
-2.  Write a shell script called `longest.sh` that takes the name of a
-    directory and a filename extension as its parameters, and prints
-    out the name of the file with the most lines in that directory
-    with that extension. For example:
+2.  Let's say occasionally our survey data are updated, and we'd like
+    to be able to automatically generate a quick data report so we can
+    see important changes. Let's say we want for each species how many
+    rows there are with and without weight data. Write a shell script
+    that accomplishes this.
 
-    ~~~
-    $ bash longest.sh /tmp/data pdb
-    ~~~
-
-    would print the name of the `.pdb` file in `/tmp/data` that has
-    the most lines.
