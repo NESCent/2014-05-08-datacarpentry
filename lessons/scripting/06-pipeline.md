@@ -136,6 +136,44 @@ Type 'q()' to quit R.
 $
 ~~~
 
+Even though there is nothing in this file that we haven't seen yet
+(aside from the timing provided, which can be turned off with the
+`--no-timing` command line option), we will see later that this can be
+very useful for verifying what commands were actually executed.
+
+With this information we can now automate the sequence of data
+aggregation and plotting commands with which the R section
+finished. Let's put these commands into a text file that we'll call
+`barplot-figure.R`, using a text editor:
+
+~~~
+dat  <- read.csv("surveys.csv", header=TRUE, na.strings="")
+# only cases without NA
+dat2 <- dat[complete.cases(dat$wgt),]
+
+# aggregate by species
+meanvals <- aggregate(wgt~species, data=dat2, mean)
+
+pdf("R_plot.pdf")
+# change to species to genus for joined dataset
+barplot(meanvals$wgt, names.arg=meanvals$species, cex.names=0.4, col=c("blue"))
+dev.off()
+~~~
+
+We can load the data into R, compute species means, and plot the
+results to a file all through executing a single command:
+
+~~~
+$ R CMD BATCH barplot-figure.R
+~~~
+
+**Exercises**:
+
+1. The above execution creates 2 files. Find them and explain what
+   they contain.
+2. A particularly nitpicky reviewer of the paper in which we included
+   this plot asks that the bars can't be blue but have to be green
+   instead. What does it take to change the figure?
 
 
 #### Key Points
