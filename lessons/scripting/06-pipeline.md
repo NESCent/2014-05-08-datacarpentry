@@ -175,6 +175,14 @@ $ R CMD BATCH barplot-figure.R
    this plot asks that the bars can't be blue but have to be green
    instead. What does it take to change the figure?
 
+Now suppose that the data isn't already all neatly packaged up in a
+single file. Supppose, for example, we now want to aggregate weights
+by genus, not by species. This information isn't in a single CSV file
+- we need to join (recombine) data first. We have learned in the SQL
+section how to do this relatively easily by pulling the data into a
+relational database, then issuing SQL commands. Like most other
+relational database systems, these steps can be scripted in SQLite,
+including exporting the results of a SQL query into a file.
 
 #### Key Points
 *   
