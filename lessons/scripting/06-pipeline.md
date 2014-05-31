@@ -184,6 +184,49 @@ relational database, then issuing SQL commands. Like most other
 relational database systems, these steps can be scripted in SQLite,
 including exporting the results of a SQL query into a file.
 
+SQLite comes with a commandline program, named `sqlite3` (to
+distinguish it from versions of SQLite prior to v3). We invoke it like
+any other program, and if we don't provide any arguments, `sqlite3`
+prints a command prompt and waits for input:
+
+~~~
+$ sqlite3 
+SQLite version 3.8.4.3 2014-04-03 16:53:12
+Enter ".help" for usage hints.
+Connected to a transient in-memory database.
+Use ".open FILENAME" to reopen on a persistent database.
+sqlite> 
+~~~     
+
+As noted earlier, instead of typing commands at the prompt, we can
+pipe them to `sqlite3`, which will then read its input from the pipe:
+
+~~~
+$ echo ".help" | sqlite3
+~~~
+
+This will print the help on SQLite's internal (non-SQL) "dot" commands
+(which start with a dot), and then exit (why?).
+
+Files in CSV format are imported into an SQLite database using the
+`.import` directive, which needs to be followed by a file name and the
+name of a table to be created from the file. Before we do this also
+need to tell SQLite that our file is in CSV format, with the first
+line being a column header line. To see how that works, let's put the
+following into a textfile.
+
+~~~
+.mode csv
+.import surveys.csv surveys
+~~~
+
+Now can pipe it to `sqlite3`:
+
+~~~
+$ cat sqlite-script | sqlite3
+~~~
+
+
 #### Key Points
 *   
 
