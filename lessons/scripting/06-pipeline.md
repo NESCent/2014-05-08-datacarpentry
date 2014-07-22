@@ -362,6 +362,29 @@ species.)
 1. Change the workflow so that the data gets aggregated by genus, not
    by species. Which file needs to be changd?
 2. Change the workflow to aggregate by plot type.
+3. Bonus take-home challenge: create a pipeline script that aggregates
+   by genus, but does this separately for each (i.e., loops over) plot
+   type, generating a figure for each plot type.
 
 #### Key Points
-*   
+
+* Codifying the steps of a data processing and analysis workflow in
+  the form of an automated executable script makes repeating the
+  workflow in exactly the same way easy, including for yourself.
+* An executable script can also be modified easily, and thus repeating
+  the workflow with different parameters, or even different sets of
+  input data, becomes easy as well.
+* If the script is kept under version control, the way it changes over
+  the course of a study can be self-documenting, almost in the sense
+  of an electronic lab notebook. In particular if changes are
+  accompanied by commit log messages that explain why the changes were
+  made.
+* Here we showed scripting executable data workflows in bash, but
+  other languages, in particular scripting languages, can and are
+  used for this purpose as well, including Python, Perl, and Ruby.
+* Similar to building complex programs, seemingly complex workflows
+  are best built up from small to larger steps each of which can be
+  tested individually. Not only does this break a daunting project
+  down into tractable pieces, but frequent testing also localizes the
+  source of unexpected problems to a small part of the whole workflow,
+  which can greatly help debugging and troubleshooting.
