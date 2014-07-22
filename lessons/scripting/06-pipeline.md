@@ -210,25 +210,158 @@ This will print the help on SQLite's internal (non-SQL) "dot" commands
 
 Files in CSV format are imported into an SQLite database using the
 `.import` directive, which needs to be followed by a file name and the
-name of a table to be created from the file. Before we do this also
+name of a table to be created from the file. Before we do this we also
 need to tell SQLite that our file is in CSV format, with the first
 line being a column header line. To see how that works, let's put the
-following into a textfile.
+following into a textfile, which we'll call `sqlite-script.sql`.
 
 ~~~
 .mode csv
 .import surveys.csv surveys
 ~~~
 
-Now can pipe it to `sqlite3`:
+Now we can pipe it to `sqlite3`:
 
 ~~~
-$ cat sqlite-script | sqlite3
+$ cat sqlite-script.sql | sqlite3
 ~~~
 
+By default, sqlite opens an in-memory database, which will disappear
+once sqlite exits, so the above won't result in anything we can
+inspect afterwards. However, we can add an SQL command to the script
+to convince ourselves that the table has really been created, and
+contains something:
+
+~~~
+$ echo "SELECT * FROM surveys;" >> sqlite-script.sql
+$ cat sqlite-script.sql | sqlite3
+~~~
+
+And we should see lots of rows from the surveys.csv files roll
+past. That is, if we put a SQL query into a text file and pipe it to
+sqlite, sqlite will execute the query and print the result, just as it
+would in interactive mode or through the user interface. If we choose
+CSV format (`.mode csv`), sqlite will essentially print the query
+results as CVS-formatted data. There is one quirk, however. By default
+sqlite does not include a header row in CSV format, but having one
+will help tremendously not only with better documenting our data, but
+also with loading the generated data into other programs such as R. We
+can control this by adding `.headers on` before the query.
+
+Now that we know how to script the database import and SQL subsetting,
+we add the other cvs file imports and replace the query in the sqlite
+script with the one that subsets the data in the way that enables us
+to aggregate them in R by genus rather than species.
+
+~~~
+.mode csv
+.import plots.csv plots
+.import species.csv species
+.import surveys.csv surveys
+.headers on
+SELECT species.genus, species.species AS speciesname, surveys.*
+FROM surveys
+JOIN species ON surveys.species = species.species_id
+WHERE species.taxa = 'Rodent';
+~~~
+
+The full sqlite script is in `./scripts/sqlite-import.sql`.
+
+**Exercise**
+
+1. Sqlite can be asked to print the query results to a file instead of
+   standard output. Find out the command for how to control this
+   (`.help` at the sqlite prompt yields help on all "dot" commands),
+   and add it to the script.
+
+Now we can put together the whole pipeline from importing data into a
+database, combining and subsetting, generating a new dataset, loading
+data into R, to running the analysis.
+
+We create this as a shell script called workflow.sh. To break down the
+task into units we have already solved, we start with a skeleton that
+gives the major steps as comment text:
+
+```
+#!/bin/bash
+
+# Load the data into database, combine, filter, export
+
+
+# Load into R for analysis and plotting
+
+```
+
+Because less-standard programs are not always in the same location or
+in the path, it is typically a good practive to turn these into
+variables so they can be easily adapted from one machine to
+another. Here we'll need R and sqlite, and in the example below sqlite
+is in a location for which we need to specify the full path.
+
+```
+#!/bin/bash
+
+# paths to programs
+sqlite=/usr/local/opt/sqlite/bin/sqlite3
+R=R
+
+# Load the data into database, combine, filter, export
+
+
+# Load into R for analysis and plotting
+
+```
+
+We should be able to run this shell script, even for now it will not
+do anything.
+
+Now we fill in the sqlite pipeline command for loading the data into a
+database, and re-exporting the combined and filtered the subset.
+
+```
+#!/bin/bash
+
+# paths to programs
+sqlite=/usr/local/opt/sqlite/bin/sqlite3
+R=R
+
+# Load the data into database, combine, filter, export
+cat sqlite-import.sql | $sqlite > result.csv
+
+
+# Load into R for analysis and plotting
+
+```
+
+We can run this script again to verify that it still works. It should
+now produce the `results.csv` output file.
+
+Then we add the R command to load the subset data into R, run the
+analysis, and plot the results.
+
+```
+#!/bin/bash
+
+# paths to programs
+sqlite=/usr/local/opt/sqlite/bin/sqlite3
+R=R
+
+# Load the data into database, combine, filter, export
+cat sqlite-import.sql | $sqlite > result.csv
+
+
+# Load into R for analysis and plotting
+$R CMD BATCH barplot-figure.R
+```
+We can run this script again, and should obtain the plot and other
+files (see above). (Note that this will still use the aggregation by
+species.)
+
+**Exercises**
+
+1. Change the workflow so that the data gets aggregated by genus, not
+   by species. Which file needs to be changd?
+2. Change the workflow to aggregate by plot type.
 
 #### Key Points
 *   
-
-#### Challenges
-
