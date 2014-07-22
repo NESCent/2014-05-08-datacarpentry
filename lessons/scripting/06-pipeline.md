@@ -7,46 +7,48 @@ title: Data pipelining
 #### Objectives
 *   Automate data processing and analysis steps in the form of scripts.
 *   Make data processing and analysis steps easily repeatable.
-*   Create shell scripts that implement an executable and modifyable pipeline.
+*   Create shell scripts that implement an executable and modifiable pipeline.
 
 The Unix command shell is not the only command interpreter for which
-sequences, loops, etc of commands can be scripted, and thereby made
-executable as a unit. Unlike tools restricted to point-click-and-edit
-user-interfaces, such as Excel, SQL databases can be scripted, too. So
-can be nearly all environments for data processing, analysis, and
-visualization that have a command prompt, such as R, from which they
-receive instructions for which operations to execute.
+command sequences, loops, conditionals can be scripted, and thereby
+made executable as a unit. For example, we have already seen that R
+can be scripted, and most SQL databases can be, too. So can be nearly
+all environments for data processing, analysis, and visualization that
+have a command prompt.  This can be exploited for creating automated,
+executable, and repeatable data pipelines.
 
-More specifically, most tools that can be invoked on the command line
-and that then read commands from the terminal can be scripted, simply
-by using the shell to pipe commands to the tool (using something
-similar to `cat file-with-commands | tool` or `echo "a command" |
-tool`). For the tool, reading commands from the terminal prompt or
-reading commands from a pipe is the same - namely reading from
-"`standard input`". Some tools have additional commandline options to
-adjust their behavior if commands get piped to them rather than typed
-at the terminal. For example, there might be an option to suppress
-certain greetings that a tool might print for a user on the
-terminal. Or there might be an option to ensure that the tool
-terminates once it reads the last command. But the principle is the
-same.
+Our goal in this lesson is to create a fully automated, executable
+pipeline that demonstrates taking data from combining and subsetting
+all the way to analysis and visualization. We will see that once we
+have this, we have a codified version of the sequence of steps from
+start to finish that can be re-executed at any time, by anyone, and
+which can be easily modified.
 
-We'll demonstrate here how this can be exploited for creating
-automated, repeatable data pipelines. Our goal is to create a pipeline
-script that is fully automated, from combining data, data subsetting,
-all the way to data analysis and visualization. Once we have this, we
-have a codified version of the sequence of steps from start to finish
-that can be re-executed at any time, by anyone, and for which it is
-easy to modify parts of it, whether subsetting, analysis parameters,
-or the visualization. 
+#### Tools that read commands can be scripted
 
-We'll demonstrate this by putting the final results of the SQL section
-together with the final results of the R section.
+If a tool can be invoked on the command line and then
+reads commands from the terminal, it can be scripted, simply by using
+the shell to pipe commands to the tool (using something similar to
+`cat file-with-commands | tool` or `echo "a command" | tool`). For a
+program, reading commands from the terminal prompt or reading commands
+from a pipe is practically the same - namely reading from "`standard
+input`". Some tools have additional command line options to adjust
+their behavior if commands get piped to them rather than typed at the
+terminal. For example, there might be an option to suppress certain
+greetings that a tool might print for a user on the terminal. Or there
+might be an option to ensure that the tool terminates once it reads
+the last command. But the principle is the same.
 
-We'll begin with the R part. Rather than typing in or copy&pasting the
-commands we used for the data analysis and plotting steps we learned
-during the section on data analysis in R, we want to execute a command
-that does the whole sequence.
+How this can be exploited for creating automated, repeatable data
+pipelines we will now demonstrate by putting the final results of the
+SQL section together with the final results of the R section.
+
+#### Scripting the analysis and visualization in R
+ 
+We'll begin with the R part. Rather than typing in or copy&amp;pasting
+the commands we used for the data analysis and plotting steps we
+learned during the section on data analysis in R, we want to execute a
+command that does the whole sequence.
 
 R has a command line interface (which RStudio packages into a nice
 user-interface), and can be asked to read R commands from a file
@@ -104,7 +106,7 @@ $ R CMD BATCH test.R
 ~~~
 
 There is no output to the terminal from this. However, R still
-captures the whole terminal output, in a file with the same basename
+captures the whole terminal output, in a file with the same base name
 as the script, but with extension `.Rout`:
 
 ~~~
@@ -171,12 +173,14 @@ $ R CMD BATCH barplot-figure.R
 
 1. The above execution creates 2 files. Find them and explain what
    they contain.
-2. A particularly nitpicky reviewer of the paper in which we included
+2. A particularly nit-picky reviewer of the paper in which we included
    this plot asks that the bars can't be blue but have to be green
    instead. What does it take to change the figure?
 
-Now suppose that the data isn't already all neatly packaged up in a
-single file. Supppose, for example, we now want to aggregate weights
+#### Scripting combining and subsetting data in SQL
+
+Suppose that the data isn't already all neatly packaged up in a
+single file. Suppose, for example, we now want to aggregate weights
 by genus, not by species. This information isn't in a single CSV file
 - we need to join (recombine) data first. We have learned in the SQL
 section how to do this relatively easily by pulling the data into a
@@ -184,7 +188,7 @@ relational database, then issuing SQL commands. Like most other
 relational database systems, these steps can be scripted in SQLite,
 including exporting the results of a SQL query into a file.
 
-SQLite comes with a commandline program, named `sqlite3` (to
+SQLite comes with a command line program, named `sqlite3` (to
 distinguish it from versions of SQLite prior to v3). We invoke it like
 any other program, and if we don't provide any arguments, `sqlite3`
 prints a command prompt and waits for input:
@@ -213,7 +217,7 @@ Files in CSV format are imported into an SQLite database using the
 name of a table to be created from the file. Before we do this we also
 need to tell SQLite that our file is in CSV format, with the first
 line being a column header line. To see how that works, let's put the
-following into a textfile, which we'll call `sqlite-script.sql`.
+following into a text file, which we'll call `sqlite-script.sql`.
 
 ~~~
 .mode csv
@@ -274,6 +278,8 @@ The full sqlite script is in `./scripts/sqlite-import.sql`.
    (`.help` at the sqlite prompt yields help on all "dot" commands),
    and add it to the script.
 
+#### Scripting the data pipeline from start to finish
+
 Now we can put together the whole pipeline from importing data into a
 database, combining and subsetting, generating a new dataset, loading
 data into R, to running the analysis.
@@ -282,7 +288,7 @@ We create this as a shell script called workflow.sh. To break down the
 task into units we have already solved, we start with a skeleton that
 gives the major steps as comment text:
 
-```
+~~~
 #!/bin/bash
 
 # Load the data into database, combine, filter, export
@@ -290,15 +296,15 @@ gives the major steps as comment text:
 
 # Load into R for analysis and plotting
 
-```
+~~~
 
-Because less-standard programs are not always in the same location or
-in the path, it is typically a good practive to turn these into
+Because less standard programs are not always in the same location or
+in the path, it is typically a good practice to turn these into
 variables so they can be easily adapted from one machine to
 another. Here we'll need R and sqlite, and in the example below sqlite
 is in a location for which we need to specify the full path.
 
-```
+~~~
 #!/bin/bash
 
 # paths to programs
@@ -310,7 +316,7 @@ R=R
 
 # Load into R for analysis and plotting
 
-```
+~~~
 
 We should be able to run this shell script, even for now it will not
 do anything.
@@ -318,7 +324,7 @@ do anything.
 Now we fill in the sqlite pipeline command for loading the data into a
 database, and re-exporting the combined and filtered the subset.
 
-```
+~~~
 #!/bin/bash
 
 # paths to programs
@@ -331,7 +337,7 @@ cat sqlite-import.sql | $sqlite > result.csv
 
 # Load into R for analysis and plotting
 
-```
+~~~
 
 We can run this script again to verify that it still works. It should
 now produce the `results.csv` output file.
@@ -339,7 +345,7 @@ now produce the `results.csv` output file.
 Then we add the R command to load the subset data into R, run the
 analysis, and plot the results.
 
-```
+~~~
 #!/bin/bash
 
 # paths to programs
@@ -352,7 +358,8 @@ cat sqlite-import.sql | $sqlite > result.csv
 
 # Load into R for analysis and plotting
 $R CMD BATCH barplot-figure.R
-```
+~~~
+
 We can run this script again, and should obtain the plot and other
 files (see above). (Note that this will still use the aggregation by
 species.)
@@ -360,7 +367,7 @@ species.)
 **Exercises**
 
 1. Change the workflow so that the data gets aggregated by genus, not
-   by species. Which file needs to be changd?
+   by species. Which file needs to be changed?
 2. Change the workflow to aggregate by plot type.
 3. Bonus take-home challenge: create a pipeline script that aggregates
    by genus, but does this separately for each (i.e., loops over) plot
