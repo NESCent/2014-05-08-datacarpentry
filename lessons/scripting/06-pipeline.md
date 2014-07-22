@@ -284,7 +284,7 @@ Now we can put together the whole pipeline from importing data into a
 database, combining and subsetting, generating a new dataset, loading
 data into R, to running the analysis.
 
-We create this as a shell script called workflow.sh. To break down the
+We create this as a shell script called `workflow.sh`. To break down the
 task into units we have already solved, we start with a skeleton that
 gives the major steps as comment text:
 
@@ -383,14 +383,14 @@ species.)
   input data, becomes easy as well.
 * If the script is kept under version control, the way it changes over
   the course of a study can be self-documenting, almost in the sense
-  of an electronic lab notebook. In particular if changes are
+  of an electronic lab notebook. Particularly so if changes are
   accompanied by commit log messages that explain why the changes were
   made.
 * Here we showed scripting executable data workflows in bash, but
-  other languages, in particular scripting languages, can and are
+  other languages, in particular scripting languages, can be and are
   used for this purpose as well, including Python, Perl, and Ruby.
 * Similar to building complex programs, seemingly complex workflows
-  are best built up from small to larger steps each of which can be
+  are best built up from small to larger steps such that each of them can be
   tested individually. Not only does this break a daunting project
   down into tractable pieces, but frequent testing also localizes the
   source of unexpected problems to a small part of the whole workflow,
